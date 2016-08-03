@@ -8,6 +8,7 @@ moment.locale( myUtil.getBrowserLang() );
 	var app = angular.module('myApp', ['chart.js']),
 	    createCAsummary,
 	    jsonCont,
+	    checkContents,
 	    jsonCustObjMain,
 	    jsonModObj,
 	    getCustObjMain,
@@ -56,7 +57,7 @@ moment.locale( myUtil.getBrowserLang() );
 	 	}
 	 	else
 	 	{
-	 		alert("This file type cannnot be processed!");
+	 		alert("This file type cannnot be processed! Only TXT file is valid.");
 	 		return;
 	 	}
 
@@ -67,9 +68,32 @@ moment.locale( myUtil.getBrowserLang() );
 	 		$scope.$apply( function ()
 	 		{
 	 			$scope.summaryShow = true;
-	 			jsonCont = JSON.parse(e.target.result);
+
+	 			try
+	 			{
+	 				jsonCont = JSON.parse(e.target.result);
+	 			}
+	 			catch (e)
+	 			{
+	 				alert( "This file does not seem JSON format! \nError Messeage: " + e );
+	 				return;
+	 			}
 		 		
-		 		createCAsummary( $scope );
+		 		switch ( checkContents() )
+		 		{
+		 			case "CA":
+		 				// Clearing Analysis Contents
+		 				createCAsummary( $scope );
+		 				break;
+		 			case "UCIA":
+		 				// UCIA Contents
+		 				break;
+		 			default: 
+		 				// Unknown Contents = "NA"
+		 				alert( "This file is not a CDMC result!" );
+		 				return;
+		 				break;
+		 		}
 
 	 		});
 	 	};
@@ -144,6 +168,21 @@ moment.locale( myUtil.getBrowserLang() );
  		tmpJson = getCustObjMainFilter( getCustObjMainFilter( jsonCustObjMain, "ZEROTAB" ), "NOREF" );
  		objTypePivot( tmpJson, "#mixTab03", subFlag );
 
+	};
+
+	checkContents = function ( jsonOb )
+	{
+		if ( jsonCont[0].HAS_INACTIVE     !== undefined && 
+			 jsonCont[0].HAS_NO_REF       !== undefined && 
+			 jsonCont[0].HAS_EQUAL_DOM    !== undefined && 
+			 jsonCont[0].HAS_SYNTAX_ERROR !== undefined )
+		{
+			return "CA";
+		}
+		else
+		{
+			return "NA";
+		}
 	};
 
 	getCustObjMain = function ()
@@ -265,7 +304,7 @@ moment.locale( myUtil.getBrowserLang() );
 			default:
 				break;
 		}
-	}
+	};
 
 
 	objTypePivot = function ( jsonObj, area, subFlag ) 
