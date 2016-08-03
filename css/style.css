@@ -1,0 +1,115 @@
+* {
+  font-family: verdana, Meiryo, sans-serif;
+  font-size  : 12pt;
+}
+
+div #dropArea
+{
+	background: #0af;
+	height: 80%;
+	width: 80%;
+	border-radius: 5px;
+	border: solid 1px #0af;
+	top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    position: absolute;
+    margin: auto;
+}
+
+div #summary
+{
+	margin: 10px;
+	padding: 10px;
+}
+
+p.dropText
+{
+	font-size: 500%;
+	color: #fff;
+ 	text-align: center;
+ 	margin-top: 30%;
+}
+
+td.pvtVals, td.pvtAxisContainer
+{
+	display: none;
+}
+
+div.tableChart
+{
+	overflow: hidden;
+}
+
+div.tableChart:before, div.tableChart:after
+{
+	content: "";
+	display: table;
+}
+
+div.tableChart:after
+{
+	clear: both;
+}
+
+div.pTab, div.pGraph
+{
+	float: left;
+}
+
+div.pGraph
+{
+	margin-left: 30px;
+}
+
+
+.tableHeader, .paragraph1, .paragraph2
+{
+	border-radius: 5px;
+    padding: 5px;
+	font-weight: bolder;
+    text-align: center;
+	color: #fff;
+}
+
+.paragraph1
+{
+	background: orange;
+	height: 80px;
+	font-size: 25pt;
+	vertical-align: middle;
+}
+
+.paragraph2
+{
+	height: 50px;
+	font-size: 20pt;
+	background: #0af;
+}
+
+.tableHeader
+{
+	background: darkturquoise;
+}
+
+.tabRowHeader
+{
+}
+
+td.cellCenter
+{
+	text-align: center;
+	vertical-align: middle;
+}
+
+.header4
+{
+	color: dodgerblue;
+}
+
+canvas
+{
+	width: 800px;
+	height: 400px;
+}

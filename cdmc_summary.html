@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>CDMC Summary</title>
+
+    <!-- Angular -->
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"> </script>
+    
+    <!-- Jquery Relevant -->
+    <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha256-cCueBR6CsyA4/9szpPfrX3s49M9vUU5BgtiJj06wt/s=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.min.js" integrity="sha256-eGE6blurk5sHj+rmkfsGYeKyZx3M4bG+ZlFyA7Kns7E=" crossorigin="anonymous"></script>
+	
+	<!-- Pivot Relevant Libraries -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/pivottable/2.1.0/pivot.min.js"> </script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/pivottable/2.1.0/export_renderers.min.js"> </script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/c3/0.4.11/c3.min.js"></script>
+	<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/pivottable/2.1.0/d3_renderers.min.js"> </script> -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/pivottable/2.1.0/c3_renderers.min.js"> </script>
+	
+	<!-- Other Javascript Utilitiy Libraries -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.14.1/moment-with-locales.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.2.1/Chart.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/angular.chartjs/1.0.0/angular-chart.min.js"></script>
+	
+	<!-- My scripts -->
+	<script src="js/myUtil.js"></script>
+	<script src="js/init.js"></script>
+
+    <!-- CSS -->
+    <!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pivottable/2.1.0/pivot.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/c3/0.4.11/c3.min.css">
+	<!-- <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/c3/0.4.10/c3.min.css"> -->
+	<!-- MY CSS -->
+    <link rel="stylesheet" type="text/css" href="css/style.css" charset="utf-8">
+  
+  </head>
+  <body>
+    <div ng-app="myApp" ng-controller="fileDropCtrl">
+      <div id="dropArea" ng-show="dragAreaShow" ng-drop="drop($event)" ng-dragover="dragOver($event)">
+        <p class="dropText"> Drop the file here </p>
+      </div>
+      <!-- <ul ng-repeat="fileName in fileNames track by $index"> -->
+      <!-- <span class="fileName"> {{fileName}} </span> -->
+      <!-- Display object name -->
+      <!--
+      <ul ng-repeat="objName in objNames track by $index">
+      	<li>{{objName.OBJ_NAME}}</li>
+      </ul>
+	  -->
+	  <div id="summary" ng-show="summaryShow">
+	 	<p class="paragraph1"> CDMC Summary based on {{fileName}} </p>
+	 	<br>
+		<!-- Customer Objects & Modifications -->
+	 	<div class="CustModObj">
+	 		<p class="paragraph2"> Customer Objects & Modification </p>
+		  	<table class="table table-bordered">
+		  		<tr class="tableHeader">
+		  			<td> Category </td>
+		  			<td> Object Counts </td>
+		  		</tr>
+		  		<tr>
+		  			<td class="tabRowHeader"> Customer Objects (Main) </td>
+		  			<td class="cellCenter"> {{objMain}} </td>
+		  		</tr>
+		  		<tr>
+		  			<td class="tabRowHeader"> Modified SAP Objects </td>
+		  			<td class="cellCenter"> {{objMod}} </td>
+		  		</tr>
+		  	</table>
+		  	<div class="tableChart">
+		  		<h4 class="header4"> Customer Objects in detail</h4>
+			  	<div id="custMainTab" class="pTab"></div>
+			  	<div id="custMainGraph" class="pGraph"></div>
+		  	</div>
+		  	<div class="tableChart">
+		  		<h4 class="header4"> Modifiled SAP Objects in detail </h4>
+			  	<div id="modObjTab" class="pTab"></div>
+			  	<div id="modObjGraph" class="pGraph"></div>
+		  	</div>
+		 </div>
+	 	<br>
+	  	<!-- Usage Analysis -->
+	  	<div class="UsageAnalysis">
+	  		<p class="paragraph2"> Usage Analysis </p>
+	  		<table class="table table-bordered">
+	  			<tr class="tableHeader">
+	  				<td> Category </td>
+	  				<td> Object counts </td>
+	  				<td> Percentage </td>
+	  			</tr>
+	  			<tr>
+	  				<td class="tabRowHeader"> Used Objects </td>
+	  				<td class="cellCenter"> {{usedObjCnt}} </td>
+	  				<td class="cellCenter"> {{usedObjCnt / objMain * 100 | number:2}} %</td>
+	  			</tr>
+	  			<tr>
+	  				<td class="tabRowHeader"> Unused Objects </td>
+	  				<td class="cellCenter"> {{unUsedObjCnt}} </td>
+	  				<td class="cellCenter"> {{unUsedObjCnt / objMain * 100 | number:2}} %</td>
+	  			</tr>
+	  			<tr>
+	  				<td class="tabRowHeader"> Not Supported </td>
+	  				<td class="cellCenter"> {{notSupObjCnt}} </td>
+	  				<td class="cellCenter"> {{notSupObjCnt / objMain * 100 | number:2}} %</td>
+	  			</tr>
+	  		</table>
+	  		<canvas id="pie" class="chart chart-pie" chart-data="usageData" chart-labels="usageLabels" chart-colors="usageColors" chart-options="options"></canvas>
+		  	<div class="tableChart">
+		  		<h4 class="header4"> Used Objects in detail </h4>
+			  	<div id="usedObjTab" class="pTab"></div>
+			  	<div id="usedObjGraph" class="pGraph"></div>
+		  	</div>
+		  	<div class="tableChart">
+		  		<h4 class="header4"> Unused Objects in detail </h4>
+			  	<div id="unUsedObjTab" class="pTab"></div>
+			  	<div id="unUsedObjGraph" class="pGraph"></div>
+		  	</div>
+	  	</div>
+	  	<br>
+	  	<!-- Other Analyses --> 
+	  	<div class="OtherAnalyses">
+	  		<p class="paragraph2"> Other Analyses </p>
+	  		<table class="table table-bordered">
+	  			<tr class="tableHeader">
+	  				<td> Category </td>
+	  				<td> Object Counts </td>
+	  				<td> Calc Parameter </td>
+	  				<td> Percentage </td>
+	  			</tr>
+	  			<tr>
+	  				<td> Inactive Objects </td>
+	  				<td class="cellCenter"> {{inactiveObjCnt}} </td>
+	  				<td class="cellCenter"> Total Customer Main Objects: {{objMain}} </td>
+	  				<td class="cellCenter"> {{inactiveObjCnt / objMain * 100 | number:2}} %</td>
+	  			</tr>
+	  			<tr>
+	  				<td> Not Referred Objects </td>
+	  				<td class="cellCenter"> {{notRefObjCnt}} <br> (w/o PROG, TRAN) {{notRefObjCnt2}} </td>
+	  				<td class="cellCenter"> Total Customer Main Objects: {{objMain}} </td>
+	  				<td class="cellCenter"> {{notRefObjCnt / objMain * 100 | number:2}} % <br> (w/o PROG, TRAN) {{notRefObjCnt2 / objMain * 100 | number:2}} % </td>
+	  			</tr>
+	  			<tr>
+	  				<td> Duplicate Domains </td>
+	  				<td class="cellCenter"> {{dupDomCnt}} </td>
+	  				<td class="cellCenter"> Total Domains: {{domCnt}} </td>
+	  				<td class="cellCenter"> {{dupDomCnt / domCnt * 100 | number:2}} % </td>
+	  			</tr>
+	  			<tr>
+	  				<td> Tables Have No Entries </td>
+	  				<td class="cellCenter"> {{noEntryTab}} </td>
+	  				<td class="cellCenter"> Total Tables: {{tabCnt}} </td>
+	  				<td class="cellCenter"> {{noEntryTab / tabCnt * 100 | number:2}} % </td>
+	  			</tr>
+	  			<tr>
+	  				<td> Objects Have Syntax-Error </td>
+	  				<td class="cellCenter"> {{sntaxErrObjCnt}} </td>
+	  				<td class="cellCenter"> N/A </td>
+	  				<td class="cellCenter"> N/A </td>
+	  			</tr>
+	  			<tr>
+	  				<td> Objects Issued Short-Dump </td>
+	  				<td class="cellCenter"> {{shortDumpObjCnt}} </td>
+	  				<td class="cellCenter"> N/A </td>
+	  				<td class="cellCenter"> N/A </td>
+	  			</tr>
+	  		</table>
+	  	</div>
+	  	<br>
+	  	<!-- Cross Checks --> 
+	  	<div class="CrossCheck tableChart">
+	  		<p class="paragraph2"> Cross Checks </p>
+	  		<div class="pTab">
+		  		<h4 class="header4"> Not Referred & Not Used Objects </h4>
+		  		<div id="mixTab01"></div>
+		  	</div>
+		  	<div class="pTab pGraph">
+		  		<h4 class="header4"> Not Referred & Duplicate Domain </h4>
+		  		<div id="mixTab02"></div>
+		  	</div>
+		  	<div class="pTab pGraph">
+		  		<h4 class="header4"> Not Referred & Tables Have No Entries </h4>
+		  		<div id="mixTab03"></div>
+		  	</div>
+	  	</div>
+	  	<br>
+	  </div> <!-- Summay DIV -->
+    </div> <!-- DIV for ng-app & ng-controller-->
+  </body>
+</html>
