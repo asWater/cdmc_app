@@ -7,6 +7,7 @@ moment.locale( myUtil.getBrowserLang() );
 {
 	var app = angular.module('myApp', ['chart.js']),
 	    createCAsummary,
+	    createUCIAsummary,
 	    jsonCont,
 	    checkContents,
 	    jsonCustObjMain,
@@ -18,11 +19,17 @@ moment.locale( myUtil.getBrowserLang() );
 	    subFlag = false,
 	    setUsageAnalysis,
 	    setOtherAnalyses,
-	    getCustObjMainFilter;
+	    getCustObjMainFilter,
+	    getCompObjSeverity,
+	    getSeverityCount,
+	    setImpactAnalysis;
 
 	app.controller('fileDropCtrl', ['$scope', function($scope){
 	  $scope.fileNames = [];
 	  $scope.dragAreaShow = true;
+	  $scope.summaryShow = false;
+	  $scope.summaryCA_Show = false;
+	  $scope.summaryUCIA_Show = false;
 	 
 	  $scope.dragOver = function($event){
 	    $event.stopPropagation();
@@ -83,10 +90,13 @@ moment.locale( myUtil.getBrowserLang() );
 		 		{
 		 			case "CA":
 		 				// Clearing Analysis Contents
+		 				$scope.summaryCA_Show = true;
 		 				createCAsummary( $scope );
 		 				break;
 		 			case "UCIA":
 		 				// UCIA Contents
+		 				$scope.summaryUCIA_Show = true;
+		 				createUCIAsummary( $scope );
 		 				break;
 		 			default: 
 		 				// Unknown Contents = "NA"
@@ -125,6 +135,31 @@ moment.locale( myUtil.getBrowserLang() );
 	  };
 	});
 
+// ==========================================================================
+// Functions
+// ==========================================================================
+	checkContents = function ()
+	{
+		if ( jsonCont[0].HAS_INACTIVE     !== undefined && 
+			 jsonCont[0].HAS_NO_REF       !== undefined && 
+			 jsonCont[0].HAS_EQUAL_DOM    !== undefined && 
+			 jsonCont[0].HAS_SYNTAX_ERROR !== undefined )
+		{
+			return "CA";
+		}
+		else if ( jsonCont[0].CUST_SEV_TEXT !== undefined &&
+				  jsonCont[0].SAP_SEV_TEXT  !== undefined && 
+				  jsonCont[0].REF_OBJ_TYPE  !== undefined && 
+				  jsonCont[0].REF_OBJ_NAME  !== undefined && 
+				  jsonCont[0].REASON1       !== undefined )
+		{
+			return "UCIA";
+		}
+		else
+		{
+			return "NA";
+		}
+	};
 
 	createCAsummary = function ( scope )
 	{
@@ -170,20 +205,12 @@ moment.locale( myUtil.getBrowserLang() );
 
 	};
 
-	checkContents = function ( jsonOb )
+	createUCIAsummary = function ( scope )
 	{
-		if ( jsonCont[0].HAS_INACTIVE     !== undefined && 
-			 jsonCont[0].HAS_NO_REF       !== undefined && 
-			 jsonCont[0].HAS_EQUAL_DOM    !== undefined && 
-			 jsonCont[0].HAS_SYNTAX_ERROR !== undefined )
-		{
-			return "CA";
-		}
-		else
-		{
-			return "NA";
-		}
+		jsonCont.sort( myUtil.sortBy( "OBJ_NAME", false ) );
+		setImpactAnalysis( scope, getCompObjSeverity() );
 	};
+
 
 	getCustObjMain = function ()
 	{
@@ -307,6 +334,34 @@ moment.locale( myUtil.getBrowserLang() );
 	};
 
 
+	getCompObjSeverity = function ()
+	{
+		var newDict = {};
+
+		for (var i = 0; i < jsonCont.length; i++)
+		{
+			newDict[ jsonCont[i]["OBJ_NAME"] ] = jsonCont[i]["CUST_SEV_TEXT"];
+		}
+
+		return	newDict;
+	};
+
+	getSeverityCount = function ( chkObj, severity )
+	{
+		var sevCnt = 0;
+
+		for ( var key in chkObj )
+		{
+			if ( chkObj[key] === severity )
+			{
+				sevCnt++;
+			}
+		}
+
+		return sevCnt;
+	};
+
+
 	objTypePivot = function ( jsonObj, area, subFlag ) 
 	{
 		var derivers = $.pivotUtilities.derivers;
@@ -382,6 +437,19 @@ moment.locale( myUtil.getBrowserLang() );
  		scope.usageColors = ["#3cb371", "#cd5c5c", "#d3d3d3"]
  		scope.usageData = [ scope.usedObjCnt, scope.unUsedObjCnt, scope.notSupObjCnt ];
 	};
+
+	setImpactAnalysis = function ( scope, chkObj )
+	{
+		scope.uciaObjMain = Object.keys( chkObj ).length;
+		scope.greenObjCnt = getSeverityCount( chkObj, "Green" );
+		scope.yellowObjCnt = getSeverityCount( chkObj, "Yellow" );
+		scope.redObjCnt = getSeverityCount( chkObj, "Red" );
+		scope.impactLabels = ["Green", "Yellow", "Red"];
+		scope.impactColors = ["#3cb371", "#ffd700", "#ff4500"];
+		scope.impactData = [ scope.greenObjCnt, scope.yellowObjCnt, scope.redObjCnt ];
+	}
+
+
 
 	setOtherAnalyses = function ( scope )
 	{

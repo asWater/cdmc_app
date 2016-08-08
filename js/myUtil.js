@@ -18,7 +18,9 @@ myUtil = (function ()
 
 	var
 		getDateArray,
-		getBrowserLang;
+		getBrowserLang,
+		sortBy,
+		groupBy;
 
 	// Module Scope Variant <<< End
 	//===================================
@@ -93,6 +95,42 @@ myUtil = (function ()
 	};
 
 
+	sortBy = function ( field, reverse, primer )
+	{
+		reverse = (reverse) ? -1 : 1;
+
+		return function ( a, b )
+		{
+			a = a[field];
+			b = b[field];
+
+			if (typeof(primer) != 'undefined' )
+			{
+				a = primer(a);
+				b = primer(b);
+			}
+
+			if (a < b) return reverse * -1;
+			if (a > b) return reverse * 1;
+
+			return 0;
+		};
+	};
+
+	groupBy = function ( items, propertyName )
+	{
+		var result = [];
+
+		$.each( items, function( index, item )
+		{
+			if ($.inArray( item[propertyName], result ) == -1 )
+			{
+				result.push( item[propertyName] );
+			}
+		});
+
+		return result;
+	};
 
 	// Public Methods <<< End
 	//===================================
@@ -101,7 +139,9 @@ myUtil = (function ()
 	// ### Return Public Methods ###
 	return {
 		getDateArray : getDateArray,
-		getBrowserLang : getBrowserLang
+		getBrowserLang : getBrowserLang,
+		sortBy : sortBy,
+		groupBy : groupBy
 	};
 
 }());
