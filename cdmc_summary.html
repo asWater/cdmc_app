@@ -52,7 +52,7 @@
       </ul>
 	  -->
 	  <div id="summary" ng-show="summaryShow">
-	 	<p class="paragraph1"> CDMC Summary based on {{fileName}} </p>
+	 	<p class="paragraph1"> CDMC Summary <br> based on <br> {{fileName}} </p>
 	 	<br>
 	 	<div id="summaryCA" ng-show="summaryCA_Show">
 			<!-- Customer Objects & Modifications -->
@@ -218,6 +218,12 @@
 		  			</tr>
 		  		</table>
 		  		<canvas id="pie" class="chart chart-pie" chart-data="impactData" chart-labels="impactLabels" chart-colors="impactColors" chart-options="options"></canvas>
+		  		<br>
+			  	<div class="tableChart">
+			  		<h4 class="header4"> Impacted Customer Objects in detail</h4>
+				  	<div id="compImpactTab" class="pTab"></div>
+				  	<div id="compImpactGraph" class="pGraph"></div>
+			  	</div>
 		  	</div>
 		  </div> <!-- UCIA Summary -->
 	  </div> <!-- Summay DIV -->

@@ -20,8 +20,8 @@ moment.locale( myUtil.getBrowserLang() );
 	    setUsageAnalysis,
 	    setOtherAnalyses,
 	    getCustObjMainFilter,
-	    getCompObjSeverity,
-	    getSeverityCount,
+	    getCompImpactObj,
+	    getImpactObjFilter,
 	    setImpactAnalysis;
 
 	app.controller('fileDropCtrl', ['$scope', function($scope){
@@ -207,8 +207,26 @@ moment.locale( myUtil.getBrowserLang() );
 
 	createUCIAsummary = function ( scope )
 	{
-		jsonCont.sort( myUtil.sortBy( "OBJ_NAME", false ) );
-		setImpactAnalysis( scope, getCompObjSeverity() );
+		var 
+			compObjImpact,
+			tmpObj;
+
+		jsonCont.sort( function ( a, b ) {
+			if ( a.OBJ_TYPE > b.OBJ_TYPE ) return 1;
+			if ( a.OBJ_TYPE < b.OBJ_TYPE ) return -1;
+			if ( a.OBJ_NAME > b.OBJ_NAME ) return 1;
+			if ( a.OBJ_NAME < b.OBJ_NAME ) return -1;
+			return 0;
+		});
+
+		compObjImpact =  getCompImpactObj();
+		setImpactAnalysis( scope, compObjImpact );
+
+ 		// Impacted Customer Object
+ 		subFlag = false;
+ 		tmpObj = getImpactObjFilter(compObjImpact, "CUST-SEV-IMPACT");
+ 		objTypePivot( tmpObj,  "#compImpactTab", subFlag );
+ 		objTypePivotGraph( tmpObj, "#compImpactGraph", subFlag );
 	};
 
 
@@ -233,7 +251,7 @@ moment.locale( myUtil.getBrowserLang() );
 	{
 		switch ( objFilter )
 		{
-			case 'USAGE':
+			case "USAGE":
 				switch ( uType )
 				{
 					case "X":
@@ -334,32 +352,56 @@ moment.locale( myUtil.getBrowserLang() );
 	};
 
 
-	getCompObjSeverity = function ()
+	getCompImpactObj = function ()
 	{
-		var newDict = {};
+		var compObj = [],
+			compObjIdx = -1;
 
-		for (var i = 0; i < jsonCont.length; i++)
+		for (var i = 0; i < jsonCont.length; i++ )
 		{
-			newDict[ jsonCont[i]["OBJ_NAME"] ] = jsonCont[i]["CUST_SEV_TEXT"];
-		}
-
-		return	newDict;
-	};
-
-	getSeverityCount = function ( chkObj, severity )
-	{
-		var sevCnt = 0;
-
-		for ( var key in chkObj )
-		{
-			if ( chkObj[key] === severity )
-			{
-				sevCnt++;
+			if ( i === 0 ) 
+			{ 
+				compObj.push( jsonCont[i] ); 
+				compObjIdx++; 
+				continue; 
 			}
+			else if ( compObj[compObjIdx].OBJ_TYPE === jsonCont[i].OBJ_TYPE && compObj[compObjIdx].OBJ_NAME === jsonCont[i].OBJ_NAME )
+			{
+				continue; 
+			}
+			else 
+			{ 
+				compObj.push( jsonCont[i] ); 
+				compObjIdx++; 
+			}
+
 		}
 
-		return sevCnt;
+		return	compObj;
 	};
+
+	getImpactObjFilter = function ( chkObj, objFilter, sValue )
+	{
+		switch ( objFilter )
+		{
+			case "CUST-SEV-TEXT": 
+				return chkObj.filter( function( elem )
+				{
+					return elem.CUST_SEV_TEXT === sValue;
+				});
+				break;
+
+			case "CUST-SEV-IMPACT": 
+				return chkObj.filter( function( elem )
+				{
+					return elem.CUST_SEV_TEXT !== "Green";
+				});
+				break;
+
+			default:
+				break;
+		}
+	}
 
 
 	objTypePivot = function ( jsonObj, area, subFlag ) 
@@ -440,10 +482,10 @@ moment.locale( myUtil.getBrowserLang() );
 
 	setImpactAnalysis = function ( scope, chkObj )
 	{
-		scope.uciaObjMain = Object.keys( chkObj ).length;
-		scope.greenObjCnt = getSeverityCount( chkObj, "Green" );
-		scope.yellowObjCnt = getSeverityCount( chkObj, "Yellow" );
-		scope.redObjCnt = getSeverityCount( chkObj, "Red" );
+		scope.uciaObjMain = chkObj.length;
+		scope.greenObjCnt = getImpactObjFilter( chkObj, "CUST-SEV-TEXT", "Green" ).length;
+		scope.yellowObjCnt = getImpactObjFilter( chkObj, "CUST-SEV-TEXT", "Yellow" ).length;
+		scope.redObjCnt = getImpactObjFilter( chkObj, "CUST-SEV-TEXT", "Red" ).length;
 		scope.impactLabels = ["Green", "Yellow", "Red"];
 		scope.impactColors = ["#3cb371", "#ffd700", "#ff4500"];
 		scope.impactData = [ scope.greenObjCnt, scope.yellowObjCnt, scope.redObjCnt ];

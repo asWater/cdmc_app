@@ -76,15 +76,16 @@ div.pGraph
 .paragraph1
 {
 	background: orange;
-	height: 120px;
-	font-size: 25pt;
+	height: 80px;
+	font-size: 100%;
 	vertical-align: middle;
 }
 
 .paragraph2
 {
 	height: 50px;
-	font-size: 20pt;
+	vertical-align: middle;
+	font-size: 20px;
 	background: #0af;
 }
 
