@@ -4,34 +4,38 @@
   background: #FFF;
 }
 
+div #dropArea, p.dropText
+{
+	background: dodgerblue;
+}
+
+
 div #dropArea
 {
-	background: mediumblue;
 	height: 80%;
 	width: 80%;
 	border-radius: 5px;
-	border: solid 1px mediumblue;
 	top: 0;
     bottom: 0;
     left: 0;
     right: 0;
     position: absolute;
     margin: auto;
+	/*border: solid 1px;*/
+}
+
+p.dropText
+{
+	font-size: 500%;
+	color: #fff;
+ 	text-align: center;
+ 	margin-top: 30%;
 }
 
 div #summary
 {
 	margin: 10px;
 	padding: 10px;
-}
-
-p.dropText
-{
-	background: mediumblue;
-	font-size: 500%;
-	color: #fff;
- 	text-align: center;
- 	margin-top: 30%;
 }
 
 td.pvtVals, td.pvtAxisContainer
@@ -88,7 +92,7 @@ div.pGraph
 	height: 50px;
 	vertical-align: middle;
 	font-size: 20px;
-	background: mediumseagreen;
+	background: yellowgreen;
 }
 
 
