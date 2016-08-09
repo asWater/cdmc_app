@@ -81,7 +81,7 @@ div.pGraph
 
 .paragraph1
 {
-	background: orange;
+	background: yellowgreen;
 	height: 80px;
 	font-size: 100%;
 	vertical-align: middle;
@@ -92,7 +92,7 @@ div.pGraph
 	height: 50px;
 	vertical-align: middle;
 	font-size: 20px;
-	background: yellowgreen;
+	background: orange;
 }
 
 
