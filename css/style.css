@@ -1,6 +1,7 @@
 * {
   font-family: verdana, Meiryo, sans-serif;
   font-size  : 12pt;
+  background: #FFF;
 }
 
 div #dropArea
@@ -26,6 +27,7 @@ div #summary
 
 p.dropText
 {
+	background: #0af;
 	font-size: 500%;
 	color: #fff;
  	text-align: center;
@@ -89,13 +91,11 @@ div.pGraph
 	background: #0af;
 }
 
-.tableHeader
-{
-	background: darkturquoise;
-}
 
 .tabRowHeader
 {
+	font-weight: bold;
+	color: royalblue;
 }
 
 td.cellCenter
@@ -106,6 +106,7 @@ td.cellCenter
 
 .header4
 {
+	font-weight: bold;
 	color: dodgerblue;
 }
 
@@ -113,4 +114,168 @@ canvas
 {
 	width: 800px;
 	height: 400px;
+}
+
+
+/*
+TABLE Relevant
+*/
+.tableHeader td,
+table.pvtTable thead tr th
+{
+	background: darkturquoise;
+}
+
+table.pvtTable tbody tr th, table.pvtTable thead tr th
+{
+    padding: 5px;
+	font-weight: bolder;
+	color: #fff;
+}
+
+table.pvtTable thead tr th
+{
+	padding: 10px;
+}
+
+table.pvtTable .pvtRowLabel
+{
+	color: royalblue;
+	background: #FFF;
+}
+
+table.pvtTable .pvtTotalLabel
+{
+	background: darkturquoise;
+	text-align: center;
+}
+
+.pvtTotal
+{
+	font-weight: normal;
+}
+
+
+table.pvtTable
+{
+	border-collapse: separate;
+}
+
+.tableRound, .pvtTable
+{
+  /*
+  border-width: 2px;
+  border-color: midnightblue;
+  border-style: solid;
+  */
+  border-spacing: 0;
+  border-collapse: separate;
+  -webkit-border-radius: 5px;
+     -moz-border-radius: 5px;
+       -o-border-radius: 5px;
+          border-radius: 5px;
+  /* box-shadow: 0 1px 1px #CCC; */ 
+}
+
+/* -----------------------
+  左上角丸　最初の行の最初のセル
+----------------------- */
+.tableRound tr:first-child th:first-child,
+.tableRound tr:first-child td:first-child
+{
+    -webkit-border-radius: 5px 0 0 0;
+       -moz-border-radius: 5px 0 0 0;
+         -o-border-radius: 5px 0 0 0;
+            border-radius: 5px 0 0 0;
+}
+/* -----------------------
+  右上角丸　最初の行の最後のセル
+----------------------- */
+.tableRound tr:first-child th:last-child,
+.tableRound tr:first-child td:last-child {
+    -webkit-border-radius: 0 5px 0 0;
+       -moz-border-radius: 0 5px 0 0;
+         -o-border-radius: 0 5px 0 0;
+            border-radius: 0 5px 0 0;
+}
+/* -----------------------
+  左下角丸　最後の行の最初のセル
+----------------------- */
+.tableRound tr:last-child th:first-child,
+.tableRound tr:last-child td:first-child {
+    -webkit-border-radius: 0 0 0 5px;
+       -moz-border-radius: 0 0 0 5px;
+         -o-border-radius: 0 0 0 5px;
+            border-radius: 0 0 0 5px;
+}
+/* -----------------------
+  右下角丸　最後の行の最後のセル
+----------------------- */
+.tableRound tr:last-child th:last-child,
+.tableRound tr:last-child td:last-child {
+    -webkit-border-radius: 0 0 5px 0;
+       -moz-border-radius: 0 0 5px 0;
+         -o-border-radius: 0 0 5px 0;
+            border-radius: 0 0 5px 0;
+}
+/* --------------------------------------------
+  thaed,tbodyを使う場合の設定
+-------------------------------------------- */
+/*
+.tableRound thead th {background:#e3dcd5;}
+.tableRound thead+tbody th {background:#f4ede6;}
+*/
+.pvtTable tbody th {text-align:center;}/*IE*/
+/* -----------------------
+  左上角丸 thead内　最初の行の最初のセル
+----------------------- */
+.pvtTable thead tr:first-child th:first-child,
+.pvtTable thead tr:first-child td:first-child {
+    -webkit-border-radius: 5px 0 0 0;
+       -moz-border-radius: 5px 0 0 0;
+         -o-border-radius: 5px 0 0 0;
+            border-radius: 5px 0 0 0;
+}
+/* -----------------------
+  右上角丸 thead内　最初の行の最後のセル
+----------------------- */
+.pvtTable thead tr:first-child th:last-child,
+.pvtTable thead tr:first-child td:last-child {
+    -webkit-border-radius: 0 5px 0 0;
+       -moz-border-radius: 0 5px 0 0;
+         -o-border-radius: 0 5px 0 0;
+            border-radius: 0 5px 0 0;
+}
+/* -----------------------
+  角丸なし　thaedの後のtbody 最初の行の最初のセル
+  角丸なし　thaedの後のtbody 最初の行の最後のセル
+----------------------- */
+.pvtTable thead+tbody tr:first-child th:first-child,
+.pvtTable thead+tbody tr:first-child td:first-child,
+.pvtTable thead+tbody tr:first-child th:last-child,
+.pvtTable thead+tbody tr:first-child td:last-child {
+    -webkit-border-radius:0px;
+       -moz-border-radius:0px;
+         -o-border-radius:0px;
+            border-radius:0px;
+}
+/* -----------------------
+  左下角丸　thaedの後のtbody 最後の行の最初のセル
+----------------------- */
+.pvtTable thead+tbody tr:last-child th:first-child,
+.pvtTable thead+tbody tr:last-child td:first-child {
+    -webkit-border-radius: 0 0 0 5px;
+       -moz-border-radius: 0 0 0 5px;
+         -o-border-radius: 0 0 0 5px;
+            border-radius: 0 0 0 5px;
+}
+/* -----------------------
+  右下角丸　thaedの後のtbody 最後の行の最後のセル
+----------------------- */
+.pvtTable thead+tbody tr:last-child th:last-child,
+.pvtTable thead+tbody tr:last-child td:last-child {
+    -webkit-border-radius: 0 0 5px 0;
+       -moz-border-radius: 0 0 5px 0;
+         -o-border-radius: 0 0 5px 0;
+            border-radius: 0 0 5px 0;
 }
