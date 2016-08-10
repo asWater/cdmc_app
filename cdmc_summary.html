@@ -5,7 +5,9 @@
     <title>CDMC Summary</title>
 
     <!-- Angular -->
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"> </script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.6/angular-animate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/2.0.1/ui-bootstrap-tpls.min.js"></script>
     
     <!-- Jquery Relevant -->
     <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha256-cCueBR6CsyA4/9szpPfrX3s49M9vUU5BgtiJj06wt/s=" crossorigin="anonymous"></script>
@@ -41,8 +43,9 @@
   <body>
     <div ng-app="myApp" ng-controller="fileDropCtrl">
       <div id="dropArea" ng-show="dragAreaShow" ng-drop="drop($event)" ng-dragover="dragOver($event)">
-        <p class="dropText"> Drop the file here </p>
+        <p class="dropText blinking"> Drop the file here </p>
       </div>
+      <div class="alertMsg" uib-alert ng-repeat="alert in alerts" ng-class="'alert-' + alert.type" close="closeAlert($index)">{{alert.msg}}</div>
       <!-- <ul ng-repeat="fileName in fileNames track by $index"> -->
       <!-- <span class="fileName"> {{fileName}} </span> -->
       <!-- Display object name -->
@@ -52,8 +55,14 @@
       </ul>
 	  -->
 	  <div id="summary" ng-show="summaryShow">
-	 	<p class="paragraph1"> CDMC Summary <br> based on <br> {{fileName}} </p>
-	 	<br>
+	  	<div class="titleHeader">
+	  	 	<h2 class="titleString titleStrLarge"> CDMC Summary ( {{cdmcAnalysis}} ) </h2> 
+	  	 	<br> 
+	  	 	<h4 class="titleString"> based on </h4> 
+	  	 	<br> 
+	  	 	<h2 class="titleString"> {{fileName}} </h2>
+	  	</div>
+	 	<pre class="forSpace largeSpace"></pre>
 	 	<div id="summaryCA" ng-show="summaryCA_Show">
 			<!-- Customer Objects & Modifications -->
 		 	<div class="CustModObj">
@@ -193,6 +202,13 @@
 		  <!-- UCIA Summary -->
 		  <div id="summaryUCIA" ng-show="summaryUCIA_Show">
 		  	<!-- Usage Analysis -->
+		  	<div class="btn-group">
+		        <label class="btn btn-primary" ng-model="radioModel" uib-btn-radio="'Include'" ng-change="toggleChange()">Include Indirectly Referred SAP Objects</label>
+		        <label class="btn btn-primary" ng-model="radioModel" uib-btn-radio="'Exclude'" ng-change="toggleChange()">Exclude Indirectly Referred SAP Objects</label>
+		    </div>
+		    <pre class="forSpace littleSpace"></pre>
+		  	<pre> {{summaryMode}} Target = {{objLength}} </pre>
+		    <pre class="forSpace"></pre>
 		  	<div class="impactOverview">
 		  		<p class="paragraph2"> Impacted Customer Object </p>
 		  		<table class="table table-bordered tableRound">
@@ -225,6 +241,32 @@
 				  	<div id="compImpactGraph" class="pGraph"></div>
 			  	</div>
 		  	</div>
+		  	<br>
+		  	<!-- Changed SAP Objects Referred By Customer Objects -->
+		  	<div class="changeSAPobj">
+		  		<p class="paragraph2"> Changed SAP Objects Referred By Customer Objects </p>
+			  	<div class="tableChart">
+				  	<div id="changedSAPTab" class="pTab"></div>
+				  	<div id="changedSAPGraph" class="pGraph"></div>
+			  	</div>	  	
+		  	</div>
+		  	<br>
+		  	<!-- Change Categories of SAP Objects -->
+		  	<div class="changeCategory">
+		  		<p class="paragraph2"> Change Categories of SAP Objects </p>
+			  	<div class="tableChart">
+				  	<div id="changeCategoryTab" class="pTab"></div>
+			  	</div>	  	
+		  	</div>
+		  	<br>  	
+		  	<!-- Changed SAP Objects Referred By Customer Objects -->
+		  	<div class="matrixCustSAP">
+		  		<p class="paragraph2"> Matrix Customer Objects vs SAP Objects </p>
+			  	<div class="tableChart">
+				  	<div id="marixCvSTab" class="pTab"></div>
+			  	</div>	  	
+		  	</div>
+		  	<br>
 		  </div> <!-- UCIA Summary -->
 	  </div> <!-- Summay DIV -->
     </div> <!-- DIV for ng-app & ng-controller-->

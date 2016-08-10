@@ -1,12 +1,12 @@
 * {
   font-family: verdana, Meiryo, sans-serif;
   font-size  : 12pt;
-  background: #FFF;
+  background-color: #FFF;
 }
 
 div #dropArea, p.dropText
 {
-	background: dodgerblue;
+	background-color: skyblue;
 }
 
 
@@ -27,15 +27,125 @@ div #dropArea
 p.dropText
 {
 	font-size: 500%;
-	color: #fff;
  	text-align: center;
+ 	vertical-align: middle;
  	margin-top: 30%;
+    color: steelblue;
+    font-weight: bolder;
+}
+
+.alertMsg div, .alertMsg span
+{
+	background-color: #f2dede;
 }
 
 div #summary
 {
 	margin: 10px;
 	padding: 10px;
+}
+
+.titleHeader
+{
+	margin-top: 3%;
+	text-align: center;
+	color: maroon;
+}
+
+.titleString
+{
+	margin: 0%;
+	font-weight: bolder;
+}
+
+.titleStrLarge
+{
+	font-size: 250%;
+}
+
+.paragraph1
+{
+	background-color: yellowgreen;
+	height: 80px;
+	font-size: 100%;
+	vertical-align: middle;
+}
+
+.paragraph2
+{
+	height: 50px;
+	vertical-align: middle;
+	font-size: 20px;
+	background-color: orange;
+}
+
+.forSpace
+{
+	border-color: white;
+	background-color: white;
+}
+
+.littleSpace
+{
+	margin-top: -3%;
+}
+
+.largeSpace
+{
+	margin-top: 5%;
+}
+
+.header4
+{
+	font-weight: bold;
+	color: royalblue;
+}
+
+/*
+canvas
+{
+	width: 800px;
+	height: 400px;
+}
+*/
+
+/*-------------------------------------
+   Button Relevant
+--------------------------------------*/
+.btn-primary
+{
+	background-color: indianred;
+	border-color: indianred;
+}
+
+.btn-primary.active
+{
+	background-color: firebrick;
+	border-color: firebrick;
+	color: gold;
+}
+
+.btn-primary:hover, .btn-primary.active:hover
+{
+	background-color: darkred;
+	border-color: darkred;
+	color: gold;
+}
+
+.btn-primary:active, .btn-primary.active:active
+{
+	background-color: darkred;
+	border-color: darkred;
+	color: gold;
+}
+
+/*-------------------------------------
+   TABLE & Graph Relevant
+--------------------------------------*/
+
+select.pvtRenderer
+{
+	border-radius: 5px;
 }
 
 td.pvtVals, td.pvtAxisContainer
@@ -69,7 +179,6 @@ div.pGraph
 	margin-left: 30px;
 }
 
-
 .tableHeader, .paragraph1, .paragraph2
 {
 	border-radius: 5px;
@@ -78,23 +187,6 @@ div.pGraph
     text-align: center;
 	color: #fff;
 }
-
-.paragraph1
-{
-	background: yellowgreen;
-	height: 80px;
-	font-size: 100%;
-	vertical-align: middle;
-}
-
-.paragraph2
-{
-	height: 50px;
-	vertical-align: middle;
-	font-size: 20px;
-	background: orange;
-}
-
 
 .tabRowHeader
 {
@@ -108,26 +200,10 @@ td.cellCenter
 	vertical-align: middle;
 }
 
-.header4
-{
-	font-weight: bold;
-	color: royalblue;
-}
-
-canvas
-{
-	width: 800px;
-	height: 400px;
-}
-
-
-/*
-TABLE Relevant
-*/
 .tableHeader td,
 table.pvtTable thead tr th
 {
-	background: royalblue;
+	background-color: royalblue;
 }
 
 table.pvtTable tbody tr th, table.pvtTable thead tr th
@@ -145,12 +221,12 @@ table.pvtTable thead tr th
 table.pvtTable .pvtRowLabel
 {
 	color: royalblue;
-	background: #FFF;
+	background-color: #FFF;
 }
 
 table.pvtTable .pvtTotalLabel
 {
-	background: royalblue;
+	background-color: royalblue;
 	text-align: center;
 }
 
@@ -163,6 +239,11 @@ table.pvtTable .pvtTotalLabel
 table.pvtTable
 {
 	border-collapse: separate;
+}
+
+div #changeCategoryTab .pvtRowLabel
+{
+	text-align: left;
 }
 
 .tableRound, .pvtTable
@@ -282,4 +363,26 @@ table.pvtTable
        -moz-border-radius: 0 0 5px 0;
          -o-border-radius: 0 0 5px 0;
             border-radius: 0 0 5px 0;
+}
+
+
+/*-------------------------------------
+   BLINK Relevant
+--------------------------------------*/
+.blinking{
+	-webkit-animation:blink 1.0s ease-in-out infinite alternate;
+    -moz-animation:blink 1.0s ease-in-out infinite alternate;
+    animation:blink 1.0s ease-in-out infinite alternate;
+}
+@-webkit-keyframes blink{
+    0% {opacity:0;}
+    100% {opacity:1;}
+}
+@-moz-keyframes blink{
+    0% {opacity:0;}
+    100% {opacity:1;}
+}
+@keyframes blink{
+    0% {opacity:0;}
+    100% {opacity:1;}
 }

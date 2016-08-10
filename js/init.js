@@ -5,7 +5,7 @@ moment.locale( myUtil.getBrowserLang() );
 
 (function ()
 {
-	var app = angular.module('myApp', ['chart.js']),
+	var app = angular.module('myApp', [ 'ui.bootstrap','chart.js' ]),
 	    createCAsummary,
 	    createUCIAsummary,
 	    jsonCont,
@@ -15,16 +15,20 @@ moment.locale( myUtil.getBrowserLang() );
 	    getCustObjMain,
 	    getModObj,
 	    objTypePivot,
+	    refObjTypePivot,
+	    matrixCustSAPPivot,
+	    changeCategorySAPPivot,
 	    objTypePivotGraph,
+	    refObjTypePivotGraph,
 	    subFlag = false,
 	    setUsageAnalysis,
 	    setOtherAnalyses,
 	    getCustObjMainFilter,
-	    getCompImpactObj,
+	    getUniqueComp2Keys,
 	    getImpactObjFilter,
 	    setImpactAnalysis;
 
-	app.controller('fileDropCtrl', ['$scope', function($scope){
+	app.controller('fileDropCtrl', ['$scope', function( $scope ){
 	  $scope.fileNames = [];
 	  $scope.dragAreaShow = true;
 	  $scope.summaryShow = false;
@@ -43,7 +47,7 @@ moment.locale( myUtil.getBrowserLang() );
 	    $event.preventDefault();
 
 	    $scope.dragAreaShow = false;
-	 
+ 
 	    var files = $event.dataTransfer.files,
 	    	f,
 	 	    reader = new FileReader();
@@ -54,7 +58,7 @@ moment.locale( myUtil.getBrowserLang() );
 	 	}
 	 	else
 	 	{
-	 		alert("Drop only 1 file!");
+	 		$scope.alerts = [{ type: "danger", msg: "Drop only 1 file!" }];
 	 		return;
 	 	}
 
@@ -64,7 +68,7 @@ moment.locale( myUtil.getBrowserLang() );
 	 	}
 	 	else
 	 	{
-	 		alert("This file type cannnot be processed! Only TXT file is valid.");
+	 		$scope.alerts = [{ type: "danger", msg: "This file type cannnot be processed! Only TXT file is valid." }];
 	 		return;
 	 	}
 
@@ -74,29 +78,32 @@ moment.locale( myUtil.getBrowserLang() );
 	 	{
 	 		$scope.$apply( function ()
 	 		{
-	 			$scope.summaryShow = true;
-
 	 			try
 	 			{
 	 				jsonCont = JSON.parse(e.target.result);
 	 			}
 	 			catch (e)
 	 			{
-	 				alert( "This file does not seem JSON format! \nError Messeage: " + e );
+	 				$scope.alerts = [{ type: "danger", msg: "This file does not seem JSON format! \nError Messeage: " + e  }];
 	 				return;
 	 			}
+
+	 			$scope.summaryShow = true;
 		 		
 		 		switch ( checkContents() )
 		 		{
 		 			case "CA":
 		 				// Clearing Analysis Contents
 		 				$scope.summaryCA_Show = true;
+		 				$scope.cdmcAnalysis = "CA";
 		 				createCAsummary( $scope );
 		 				break;
 		 			case "UCIA":
 		 				// UCIA Contents
 		 				$scope.summaryUCIA_Show = true;
-		 				createUCIAsummary( $scope );
+		 				$scope.cdmcAnalysis = "UCIA";
+	    				$scope.radioModel = "Include";
+	    				$scope.toggleChange();
 		 				break;
 		 			default: 
 		 				// Unknown Contents = "NA"
@@ -108,7 +115,30 @@ moment.locale( myUtil.getBrowserLang() );
 	 		});
 	 	};
 
+	  }; // End of "$scope.drop" function
+	  
+	  $scope.toggleChange = function ()
+	  {
+	  	//
+	    switch ( $scope.radioModel )
+	    {
+	    	case "Include":
+	    		$scope.summaryMode = "Summary with including indirectly SAP referred objects.";
+	    		$scope.objLength = jsonCont.length;
+	    		createUCIAsummary( $scope, jsonCont );
+	    		break;
+	    	case "Exclude":
+	    		$scope.summaryMode = "Summary with excluding indirectly SAP referred objects.";
+	    		$scope.objLength = getImpactObjFilter( jsonCont, "EXCLUDE-INDIRECT" ).length;
+	    		createUCIAsummary( $scope, getImpactObjFilter( jsonCont, "EXCLUDE-INDIRECT" ));
+	    		break;
+	    	default:
+	    		break;
+	    }
 	  };
+
+	  $scope.closeAlert = function( index ) { $scope.alerts.splice(index, 1); location.reload(); };
+
 	}]).directive('ngDrop', function($parse){
 	  return{
 	    restrict: 'A',
@@ -205,13 +235,14 @@ moment.locale( myUtil.getBrowserLang() );
 
 	};
 
-	createUCIAsummary = function ( scope )
+	createUCIAsummary = function ( scope, jsonObj )
 	{
 		var 
 			compObjImpact,
-			tmpObj;
+			tmpObj,
+			changedUniqueSAP;
 
-		jsonCont.sort( function ( a, b ) {
+		jsonObj.sort( function ( a, b ) {
 			if ( a.OBJ_TYPE > b.OBJ_TYPE ) return 1;
 			if ( a.OBJ_TYPE < b.OBJ_TYPE ) return -1;
 			if ( a.OBJ_NAME > b.OBJ_NAME ) return 1;
@@ -219,14 +250,36 @@ moment.locale( myUtil.getBrowserLang() );
 			return 0;
 		});
 
-		compObjImpact =  getCompImpactObj();
+		compObjImpact =  getUniqueComp2Keys( jsonObj, "OBJ_TYPE", "OBJ_NAME" );
 		setImpactAnalysis( scope, compObjImpact );
 
  		// Impacted Customer Object
  		subFlag = false;
- 		tmpObj = getImpactObjFilter(compObjImpact, "CUST-SEV-IMPACT");
+ 		tmpObj = getImpactObjFilter( compObjImpact, "CUST-SEV-IMPACT" );
  		objTypePivot( tmpObj,  "#compImpactTab", subFlag );
  		objTypePivotGraph( tmpObj, "#compImpactGraph", subFlag );
+
+ 		// Changed SAP objects
+ 		tmpObj = [];
+ 		tmpObj = getImpactObjFilter( jsonObj, "SAP-SEV-IMPACT" );
+ 		tmpObj.sort( function ( a, b ) {
+			if ( a.REF_OBJ_TYPE > b.REF_OBJ_TYPE ) return 1;
+			if ( a.REF_OBJ_TYPE < b.REF_OBJ_TYPE ) return -1;
+			if ( a.REF_OBJ_NAME > b.REF_OBJ_NAME ) return 1;
+			if ( a.REF_OBJ_NAME < b.REF_OBJ_NAME ) return -1;
+			return 0;
+		});
+		changedUniqueSAP = getUniqueComp2Keys( tmpObj, "REF_OBJ_TYPE", "REF_OBJ_NAME" );
+  		refObjTypePivot( changedUniqueSAP,  "#changedSAPTab", subFlag );
+ 		refObjTypePivotGraph( changedUniqueSAP, "#changedSAPGraph", subFlag );
+
+ 		// Change Categories of SAP Objects
+ 		changeCategorySAPPivot( changedUniqueSAP, "#changeCategoryTab" );
+
+ 		// Matrix Customer Objects VS SAP Objects
+ 		matrixCustSAPPivot( tmpObj, "#marixCvSTab" );
+
+
 	};
 
 
@@ -352,26 +405,26 @@ moment.locale( myUtil.getBrowserLang() );
 	};
 
 
-	getCompImpactObj = function ()
+	getUniqueComp2Keys = function ( jsonObj, key1, key2 )
 	{
 		var compObj = [],
 			compObjIdx = -1;
 
-		for (var i = 0; i < jsonCont.length; i++ )
+		for (var i = 0; i < jsonObj.length; i++ )
 		{
 			if ( i === 0 ) 
 			{ 
-				compObj.push( jsonCont[i] ); 
+				compObj.push( jsonObj[i] ); 
 				compObjIdx++; 
 				continue; 
 			}
-			else if ( compObj[compObjIdx].OBJ_TYPE === jsonCont[i].OBJ_TYPE && compObj[compObjIdx].OBJ_NAME === jsonCont[i].OBJ_NAME )
+			else if ( compObj[compObjIdx][key1] === jsonObj[i][key1] && compObj[compObjIdx][key2] === jsonObj[i][key2] )
 			{
 				continue; 
 			}
 			else 
 			{ 
-				compObj.push( jsonCont[i] ); 
+				compObj.push( jsonObj[i] ); 
 				compObjIdx++; 
 			}
 
@@ -394,7 +447,21 @@ moment.locale( myUtil.getBrowserLang() );
 			case "CUST-SEV-IMPACT": 
 				return chkObj.filter( function( elem )
 				{
-					return elem.CUST_SEV_TEXT !== "Green";
+					return elem.CUST_SEV_TEXT === "Yellow" || elem.CUST_SEV_TEXT === "Red";
+				});
+				break;
+
+			case "SAP-SEV-IMPACT": 
+				return chkObj.filter( function( elem )
+				{
+					return elem.SAP_SEV_TEXT === "Yellow" || elem.SAP_SEV_TEXT === "Red";
+				});
+				break;
+
+			case "EXCLUDE-INDIRECT": 
+				return chkObj.filter( function( elem )
+				{
+					return elem.REASON1 !== "Obj impacted due to an indirectly referenced SAP obj";
 				});
 				break;
 
@@ -429,6 +496,47 @@ moment.locale( myUtil.getBrowserLang() );
 			});			
 		}
 
+	};
+
+	refObjTypePivot = function ( jsonObj, area )
+	{
+		var derivers = $.pivotUtilities.derivers;
+
+		$(area).pivotUI( jsonObj, 
+		{
+			rows: ["REF_OBJ_TYPE"],
+			vals: ["REF_OBJ_NAME"],
+			aggregator: 'Count',
+			rendererName: "Heatmap"
+		});		
+
+	};
+
+	matrixCustSAPPivot = function ( jsonObj, area )
+	{
+		var derivers = $.pivotUtilities.derivers;
+
+		$(area).pivotUI( jsonObj, 
+		{
+			rows: ["OBJ_TYPE"],
+			cols: ["REF_OBJ_TYPE"],
+			vals: ["REF_OBJ_NAME"],
+			aggregator: 'Count',
+			rendererName: "Heatmap"
+		});			
+	};
+
+	changeCategorySAPPivot = function ( jsonObj, area )
+	{
+		var derivers = $.pivotUtilities.derivers;
+
+		$(area).pivotUI( jsonObj, 
+		{
+			rows: ["REASON1"],
+			vals: ["OBJ_NAME"],
+			aggregator: 'Count',
+			rendererName: "Heatmap"
+		});			
 	};
 
 
@@ -466,8 +574,24 @@ moment.locale( myUtil.getBrowserLang() );
 				
 			});			
 		}
+	};
 
+	refObjTypePivotGraph = function ( jsonObj, area )
+	{
+		var derivers = $.pivotUtilities.derivers;
 
+		$(area).pivotUI( jsonObj, 
+		{
+			rows: ["REF_OBJ_TYPE"],
+			vals: ["REF_OBJ_NAME"],
+			aggregator: 'Count',
+			rendererName: "Bar Chart",
+			renderers: $.extend(
+				$.pivotUtilities.renderers,
+				$.pivotUtilities.c3_renderers
+				)
+			
+		});			
 	};
 
 	setUsageAnalysis = function ( scope )
