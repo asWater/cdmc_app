@@ -269,6 +269,22 @@
 		  	<br>
 		  </div> <!-- UCIA Summary -->
 	  </div> <!-- Summay DIV -->
+	  <!-- Modal for inProgress -->
+	  <script type="text/ng-template" id="progressBar">
+	      <div class="modal-header">
+	         <h3>
+	            <span ng-show="remotingProgress < 100">In Process</span>
+	            <span ng-show="remotingProgress == 100">Completed</span>
+	         </h3>
+	      </div>
+	      <div class="modal-body">
+	          <div>Status: {{remotingStatus}}</div>
+	          <uib-progressbar ng-class="(remotingProgress < 100) ? 'progress-striped active' : 'progress'" value="remotingProgress" type="{{pbType}}"></uib-progressbar>
+	      </div>
+	      <div class="modal-footer" ng-show="remotingProgress == 100">
+	          <button type="button" class="btn btn-info" ng-click="$close()">Close</button>
+	      </div>
+	  </script><!-- Modal for inProgress-->
     </div> <!-- DIV for ng-app & ng-controller-->
   </body>
 </html>

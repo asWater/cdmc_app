@@ -28,7 +28,7 @@ moment.locale( myUtil.getBrowserLang() );
 	    getImpactObjFilter,
 	    setImpactAnalysis;
 
-	app.controller('fileDropCtrl', ['$scope', function( $scope ){
+	app.controller('fileDropCtrl', ['$scope', '$uibModal', function( $scope, $uibModal ){
 	  $scope.fileNames = [];
 	  $scope.dragAreaShow = true;
 	  $scope.summaryShow = false;
@@ -39,18 +39,19 @@ moment.locale( myUtil.getBrowserLang() );
 	    $event.stopPropagation();
 	    $event.preventDefault();
 	 
-	    $event.dataTransfer.dropEffect = 'copy';
+	    $event.dataTransfer.dropEffect = "move";
 	  };
 	 
 	  $scope.drop = function($event){
+
+	    var files = $event.dataTransfer.files,
+	    	f,
+	 	    reader = new FileReader();
+
 	    $event.stopPropagation();
 	    $event.preventDefault();
 
 	    $scope.dragAreaShow = false;
- 
-	    var files = $event.dataTransfer.files,
-	    	f,
-	 	    reader = new FileReader();
 
 	 	if ( files.length === 1 )
 	 	{
@@ -64,6 +65,13 @@ moment.locale( myUtil.getBrowserLang() );
 
 	 	if (("" + f.type).indexOf("text/") == 0)
 	 	{
+			$scope.pbType = "success";
+			$uibModal.open({
+				templateUrl: "progressBar",
+				backdrop: "static",
+				scope: $scope
+			});
+
 	 		reader.readAsText(f);
 	 	}
 	 	else
@@ -73,23 +81,46 @@ moment.locale( myUtil.getBrowserLang() );
 	 	}
 
 	 	$scope.fileName = f.name;
- 
+
+	 	reader.onloadstart = function ( e )
+	 	{
+			$scope.$apply( function () { $scope.remotingProgress = 1; $scope.remotingStatus = "Start file reading"; } );
+	 	};
+
+	 	reader.onprogress = function ( evt )
+	 	{
+		    // evt is an ProgressEvent.
+		    $scope.$apply ( function ()
+		    {
+			    if (evt.lengthComputable) {
+			      $scope.remotingProgress = ( Math.round((evt.loaded / evt.total) * 100) * 0.9 );  $scope.remotingStatus = "Reading File..."; 
+			      console.log( Math.round((evt.loaded / evt.total) * 100) );
+			    }	    	
+		    });
+
+	 	};
+
 	 	reader.onload = function(e)
 	 	{
 	 		$scope.$apply( function ()
 	 		{
 	 			try
 	 			{
+	 				$scope.remotingStatus = "JSON parsing";
 	 				jsonCont = JSON.parse(e.target.result);
 	 			}
 	 			catch (e)
 	 			{
+	 				$scope.pbType = "danger";
+	 				$scope.remotingProgress = 100; $scope.remotingStatus = "Error during JSON Parse!";
 	 				$scope.alerts = [{ type: "danger", msg: "This file does not seem JSON format! \nError Messeage: " + e  }];
 	 				return;
 	 			}
 
 	 			$scope.summaryShow = true;
 		 		
+	 			$scope.remotingProgress = 90; $scope.remotingStatus = "Creating Summary";
+
 		 		switch ( checkContents() )
 		 		{
 		 			case "CA":
@@ -111,6 +142,8 @@ moment.locale( myUtil.getBrowserLang() );
 		 				return;
 		 				break;
 		 		}
+
+		 		$scope.remotingProgress = 100; $scope.remotingStatus = "All processes were finished.";
 
 	 		});
 	 	};
