@@ -26,7 +26,10 @@ moment.locale( myUtil.getBrowserLang() );
 	    getCustObjMainFilter,
 	    getUniqueComp2Keys,
 	    getImpactObjFilter,
-	    setImpactAnalysis;
+	    setImpactAnalysis,
+	    pbModalInstance,
+	    pbError = false,
+	    pbAbend;
 
 	app.controller('fileDropCtrl', ['$scope', '$uibModal', function( $scope, $uibModal ){
 	  $scope.fileNames = [];
@@ -39,7 +42,7 @@ moment.locale( myUtil.getBrowserLang() );
 	    $event.stopPropagation();
 	    $event.preventDefault();
 	 
-	    $event.dataTransfer.dropEffect = "move";
+	    $event.dataTransfer.dropEffect = "copy";
 	  };
 	 
 	  $scope.drop = function($event){
@@ -66,7 +69,8 @@ moment.locale( myUtil.getBrowserLang() );
 	 	if (("" + f.type).indexOf("text/") == 0)
 	 	{
 			$scope.pbType = "success";
-			$uibModal.open({
+			$scope.remotingProgress = 1; $scope.remotingStatus = "File type is checked";
+			pbModalInstance = $uibModal.open({
 				templateUrl: "progressBar",
 				backdrop: "static",
 				scope: $scope
@@ -84,7 +88,7 @@ moment.locale( myUtil.getBrowserLang() );
 
 	 	reader.onloadstart = function ( e )
 	 	{
-			$scope.$apply( function () { $scope.remotingProgress = 1; $scope.remotingStatus = "Start file reading"; } );
+			$scope.$apply( function () { $scope.remotingProgress = 2; $scope.remotingStatus = "Start file reading"; } );
 	 	};
 
 	 	reader.onprogress = function ( evt )
@@ -104,15 +108,16 @@ moment.locale( myUtil.getBrowserLang() );
 	 	{
 	 		$scope.$apply( function ()
 	 		{
+	 			$scope.remotingStatus = "JSON parsing";
+
 	 			try
 	 			{
-	 				$scope.remotingStatus = "JSON parsing";
 	 				jsonCont = JSON.parse(e.target.result);
 	 			}
 	 			catch (e)
 	 			{
-	 				$scope.pbType = "danger";
-	 				$scope.remotingProgress = 100; $scope.remotingStatus = "Error during JSON Parse!";
+	 				pbAbend( $scope, "Error during JSON Parse!" );
+
 	 				$scope.alerts = [{ type: "danger", msg: "This file does not seem JSON format! \nError Messeage: " + e  }];
 	 				return;
 	 			}
@@ -138,12 +143,15 @@ moment.locale( myUtil.getBrowserLang() );
 		 				break;
 		 			default: 
 		 				// Unknown Contents = "NA"
-		 				alert( "This file is not a CDMC result!" );
+			 			$scope.summaryShow = false;
+		 				pbAbend( $scope, "This file is not a CDMC result!" );
+		 				$scope.alerts = [ { type: "danger", msg: "This file is not a CDMC result!" } ];
 		 				return;
 		 				break;
 		 		}
 
 		 		$scope.remotingProgress = 100; $scope.remotingStatus = "All processes were finished.";
+		 		pbModalInstance.close();
 
 	 		});
 	 	};
@@ -197,6 +205,7 @@ moment.locale( myUtil.getBrowserLang() );
 	    }
 	  };
 	});
+
 
 // ==========================================================================
 // Functions
@@ -661,6 +670,14 @@ moment.locale( myUtil.getBrowserLang() );
 		scope.noEntryTab = getCustObjMainFilter( jsonCustObjMain, "ZEROTAB" ).length;
 		scope.sntaxErrObjCnt = getCustObjMainFilter( jsonCustObjMain, "SYNTAXERR" ).length;
 		scope.shortDumpObjCnt = getCustObjMainFilter( jsonCustObjMain, "SHORTDUMP" ).length;
+	};
+
+	pbAbend = function ( scope, msg )
+	{
+		scope.pbError = true;
+		scope.pbType = "danger";
+		scope.remotingProgress = 100; 
+		scope.remotingStatus = msg;
 	};
 
 

@@ -21,7 +21,7 @@ div #dropArea
     right: 0;
     position: absolute;
     margin: auto;
-	/*border: solid 1px;*/
+	border: dotted 15px steelblue;
 }
 
 p.dropText
@@ -32,6 +32,7 @@ p.dropText
  	margin-top: 30%;
     color: steelblue;
     font-weight: bolder;
+    opacity: 1;
 }
 
 .alertMsg div, .alertMsg span
