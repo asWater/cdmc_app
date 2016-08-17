@@ -22,6 +22,7 @@ div #dropArea
     position: absolute;
     margin: auto;
 	border: dotted 15px steelblue;
+	border-radius: 5px;
 }
 
 p.dropText
