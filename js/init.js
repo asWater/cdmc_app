@@ -32,9 +32,12 @@ moment.locale( myUtil.getBrowserLang() );
 	    pbAbend,
 	    onLoadEnd = false,
 	    jsonParseEnd = false,
+	    jsonParseErr = false,
+	    summaryCreated = false,
+	    summaryCreateErr = false,
 	    waitInterval;
 
-	app.controller('fileDropCtrl', ['$scope', '$uibModal', function( $scope, $uibModal ){
+	app.controller('fileDropCtrl', ['$scope', '$uibModal', '$rootScope', function( $scope, $uibModal, $rootScope ){
 	  $scope.fileNames = [];
 	  $scope.dragAreaShow = true;
 	  $scope.summaryShow = false;
@@ -100,8 +103,8 @@ moment.locale( myUtil.getBrowserLang() );
 		    $scope.$apply ( function ()
 		    {
 			    if ( evt.lengthComputable ) {
-			      $scope.remotingProgress = ( Math.round((evt.loaded / evt.total) * 100) * 0.7 );  $scope.remotingStatus = "Reading File..."; 
-			      console.log( Math.round( (evt.loaded / evt.total) * 100) );
+					$scope.remotingProgress = ( Math.round((evt.loaded / evt.total) * 100) * 0.7 );  $scope.remotingStatus = "Reading File...";
+					console.log( Math.round( (evt.loaded / evt.total) * 100) );
 			    }	    	
 		    });
 	 	};
@@ -109,18 +112,19 @@ moment.locale( myUtil.getBrowserLang() );
 	 	reader.onloadend = function ( e )
 	 	{
 	 		console.log("== File reader onloadend ==");
+	 		console.log("PHASE: Start of onloadend processing: " + $scope.remotingProgress + " Time: " + ( moment().format("YYYY/MMM/DD HH:mm:ss") ) );
 	 		onLoadEnd = true;
-	 	}
+	 	};
 
-	 	reader.onload = function(e)
+	 	reader.onload = function ( e )
 	 	{
 	 		console.log("== File reader onload ==");
+	 		console.log("PHASE: Start of onload processing: " + $scope.remotingProgress + " Time: " + ( moment().format("YYYY/MMM/DD HH:mm:ss") ) );
  			
 	 		var _jsonParase = function () 
 	 		{
 	 			$scope.$apply( function() { $scope.remotingProgress = 80; $scope.remotingStatus = "JSON parsing";});
-	 			var dt = new Date(); 
-	 			console.log("PHASE: JSON parsing: " + $scope.remotingProgress + " Time: " + dt );
+	 			console.log("PHASE: JSON parsing: " + $scope.remotingProgress + " Time: " + ( moment().format("YYYY/MMM/DD HH:mm:ss") ) );
 
 	 			try
 	 			{
@@ -130,6 +134,7 @@ moment.locale( myUtil.getBrowserLang() );
 	 			{
 	 				pbAbend( $scope, "Error during JSON Parse!" );
 	 				$scope.alerts = [{ type: "danger", msg: "This file does not seem JSON format! \nError Messeage: " + e  }];
+	 				jsonParseErr = true;
 	 				return;
 	 			}
 
@@ -138,54 +143,123 @@ moment.locale( myUtil.getBrowserLang() );
 
  			var _createSummary = function () 
  			{
-	 			$scope.$apply( function () { $scope.remotingProgress = 90; $scope.remotingStatus = "Creating Summary"; });  
-	 			var dt = new Date(); 
-	 			console.log( "PHASE: Creating Summary: " + $scope.remotingProgress + " Time: " + dt );
+ 				if ( jsonParseErr ) return;
 
-		 		$scope.$apply( function ()
+	 			$scope.$apply( function () { $scope.remotingProgress = 90; $scope.remotingStatus = "Creating Summary"; }); 
+	 			console.log( "PHASE: Creating Summary: " + $scope.remotingProgress + " Time: " + ( moment().format("YYYY/MMM/DD HH:mm:ss") ) );
+
+		 		$scope.summaryShow = true;
+
+		 		switch ( checkContents() )
 		 		{
-		 			$scope.summaryShow = true;
+		 			case "CA":
+		 				// Clearing Analysis Contents
+		 				$scope.summaryCA_Show = true;
+		 				$scope.cdmcAnalysis = "CA";
+		 				createCAsummary( $scope );
+		 				break;
+		 			case "UCIA":
+		 				// UCIA Contents
+		 				$scope.summaryUCIA_Show = true;
+		 				$scope.cdmcAnalysis = "UCIA";
+	    				$scope.radioModel = "Include";
+	    				$scope.toggleChange();
+		 				break;
+		 			default: 
+		 				// Unknown Contents = "NA"
+			 			$scope.summaryShow = false;
+		 				pbAbend( $scope, "This file is not a CDMC result!" );
+		 				$scope.alerts = [ { type: "danger", msg: "This file is not a CDMC result!" } ];
+		 				summaryCreateErr = true;
+		 				return;
+		 				break;
+		 		}
 
-			 		switch ( checkContents() )
-			 		{
-			 			case "CA":
-			 				// Clearing Analysis Contents
-			 				$scope.summaryCA_Show = true;
-			 				$scope.cdmcAnalysis = "CA";
-			 				createCAsummary( $scope );
-			 				break;
-			 			case "UCIA":
-			 				// UCIA Contents
-			 				$scope.summaryUCIA_Show = true;
-			 				$scope.cdmcAnalysis = "UCIA";
-		    				$scope.radioModel = "Include";
-		    				$scope.toggleChange();
-			 				break;
-			 			default: 
-			 				// Unknown Contents = "NA"
-				 			$scope.summaryShow = false;
-			 				pbAbend( $scope, "This file is not a CDMC result!" );
-			 				$scope.alerts = [ { type: "danger", msg: "This file is not a CDMC result!" } ];
-			 				return;
-			 				break;
-			 		}
-
-			 		$scope.remotingProgress = 100; $scope.remotingStatus = "All processes were finished.";
-		 			var dt = new Date(); 
-		 			console.log( "PHASE: Finished: " + $scope.remotingProgress + " Time: " + dt );
-
-			 		pbModalInstance.close();
-
-		 		});
+			 	summaryCreated = true;
  			};
 
-			waitInterval( "onLoadEnd", _jsonParase, 500 );
-			waitInterval( "jsonParseEnd", _createSummary, 500 );
+ 			var _finalyze = function ()
+ 			{
+ 				if ( summaryCreateErr ) return;
 
-	 	};
+				$scope.$apply( function () { $scope.remotingProgress = 100; $scope.remotingStatus = "All processes were finished."; } );
+	 			console.log( "PHASE: Finished: " + $scope.remotingProgress + " Time: " +  ( moment().format("YYYY/MMM/DD HH:mm:ss") )  );
+		 		pbModalInstance.close();
+ 			};
+
+ 			// In order to show the progress bar suitably, setInterval was necessary.
+			waitInterval( "onLoadEnd", _jsonParase, 1000 );
+			waitInterval( "jsonParseEnd", _createSummary, 1000 );
+			waitInterval( "summaryCreated", _finalyze, 1000 );
+
+	 	}; // End of reader.onload.
+
+
+/* Version w/o setInterval -> Progress bar does not really change.
+	 	reader.onload = function ( e )
+	 	{
+	 		console.log("== File reader onload ==");
+	 		console.log("PHASE: Start of onload processing: " + $scope.remotingProgress + " Time: " + ( moment().format("YYYY/MMM/DD HH:mm:ss") ) );
+ 			
+ 			$scope.$apply( function() { $scope.remotingProgress = 80; $scope.remotingStatus = "JSON parsing";});
+ 			console.log("PHASE: JSON parsing: " + $scope.remotingProgress + " Time: " + ( moment().format("YYYY/MMM/DD HH:mm:ss") ) );
+
+ 			try
+ 			{
+ 				jsonCont = JSON.parse(e.target.result);
+ 			}
+ 			catch (e)
+ 			{
+ 				pbAbend( $scope, "Error during JSON Parse!" );
+ 				$scope.alerts = [{ type: "danger", msg: "This file does not seem JSON format! \nError Messeage: " + e  }];
+ 				jsonParseErr = true;
+ 				return;
+ 			}
+
+ 			jsonParseEnd = true;
+
+ 			$scope.$apply( function () { $scope.remotingProgress = 90; $scope.remotingStatus = "Creating Summary"; }); 
+ 			console.log( "PHASE: Creating Summary: " + $scope.remotingProgress + " Time: " + ( moment().format("YYYY/MMM/DD HH:mm:ss") ) );
+
+	 		$scope.summaryShow = true;
+
+	 		switch ( checkContents() )
+	 		{
+	 			case "CA":
+	 				// Clearing Analysis Contents
+	 				$scope.summaryCA_Show = true;
+	 				$scope.cdmcAnalysis = "CA";
+	 				createCAsummary( $scope );
+	 				break;
+	 			case "UCIA":
+	 				// UCIA Contents
+	 				$scope.summaryUCIA_Show = true;
+	 				$scope.cdmcAnalysis = "UCIA";
+    				$scope.radioModel = "Include";
+    				$scope.toggleChange();
+	 				break;
+	 			default: 
+	 				// Unknown Contents = "NA"
+		 			$scope.summaryShow = false;
+	 				pbAbend( $scope, "This file is not a CDMC result!" );
+	 				$scope.alerts = [ { type: "danger", msg: "This file is not a CDMC result!" } ];
+	 				summaryCreateErr = true;
+	 				return;
+	 				break;
+	 		}
+
+		 	summaryCreated = true;
+
+			$scope.$apply( function () { $scope.remotingProgress = 100; $scope.remotingStatus = "All processes were finished."; } );
+ 			console.log( "PHASE: Finished: " + $scope.remotingProgress + " Time: " +  ( moment().format("YYYY/MMM/DD HH:mm:ss") )  );
+	 		pbModalInstance.close();
+
+	 	}; // End of reader.onload.
+*/
 
 	  }; // End of "$scope.drop" function
-	  
+
+
 	  $scope.toggleChange = function ()
 	  {
 	  	//
@@ -720,10 +794,13 @@ moment.locale( myUtil.getBrowserLang() );
 
 	pbAbend = function ( scope, msg )
 	{
-		scope.pbError = true;
-		scope.pbType = "danger";
-		scope.remotingProgress = 100; 
-		scope.remotingStatus = msg;
+		scope.$apply( function () 
+		{
+			scope.pbError = true;
+			scope.pbType = "danger";
+			scope.remotingProgress = 100; 
+			scope.remotingStatus = msg;
+		});
 	};
 
 
