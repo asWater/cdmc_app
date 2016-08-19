@@ -32,9 +32,8 @@ moment.locale( myUtil.getBrowserLang() );
 	    pbAbend,
 	    onLoadEnd = false,
 	    jsonParseEnd = false,
-	    jsonParseErr = false,
+	    abortAllProc = false,
 	    summaryCreated = false,
-	    summaryCreateErr = false,
 	    waitInterval;
 
 	app.controller('fileDropCtrl', ['$scope', '$uibModal', '$rootScope', function( $scope, $uibModal, $rootScope ){
@@ -113,7 +112,7 @@ moment.locale( myUtil.getBrowserLang() );
 	 	{
 	 		console.log("== File reader onloadend ==");
 	 		console.log("PHASE: Start of onloadend processing: " + $scope.remotingProgress + " Time: " + ( moment().format("YYYY/MMM/DD HH:mm:ss") ) );
-	 		onLoadEnd = true;
+	 		setTimeout( function () { onLoadEnd = true; }, 1000 ); 
 	 	};
 
 	 	reader.onload = function ( e )
@@ -134,16 +133,17 @@ moment.locale( myUtil.getBrowserLang() );
 	 			{
 	 				pbAbend( $scope, "Error during JSON Parse!" );
 	 				$scope.alerts = [{ type: "danger", msg: "This file does not seem JSON format! \nError Messeage: " + e  }];
-	 				jsonParseErr = true;
+	 				abortAllProc = true;
 	 				return;
 	 			}
 
-	 			jsonParseEnd = true;
+	 			//jsonParseEnd = true;
+	 			setTimeout( function () { jsonParseEnd = true; }, 1000 ); 
  			};
 
  			var _createSummary = function () 
  			{
- 				if ( jsonParseErr ) return;
+ 				if ( abortAllProc ) return;
 
 	 			$scope.$apply( function () { $scope.remotingProgress = 90; $scope.remotingStatus = "Creating Summary"; }); 
 	 			console.log( "PHASE: Creating Summary: " + $scope.remotingProgress + " Time: " + ( moment().format("YYYY/MMM/DD HH:mm:ss") ) );
@@ -170,27 +170,28 @@ moment.locale( myUtil.getBrowserLang() );
 			 			$scope.summaryShow = false;
 		 				pbAbend( $scope, "This file is not a CDMC result!" );
 		 				$scope.alerts = [ { type: "danger", msg: "This file is not a CDMC result!" } ];
-		 				summaryCreateErr = true;
+		 				abortAllProc = true;
 		 				return;
 		 				break;
 		 		}
 
-			 	summaryCreated = true;
+			 	//summaryCreated = true;
+			 	setTimeout( function () { summaryCreated = true; }, 1000 ); 
  			};
 
  			var _finalyze = function ()
  			{
- 				if ( summaryCreateErr ) return;
+ 				if ( abortAllProc ) return;
 
 				$scope.$apply( function () { $scope.remotingProgress = 100; $scope.remotingStatus = "All processes were finished."; } );
 	 			console.log( "PHASE: Finished: " + $scope.remotingProgress + " Time: " +  ( moment().format("YYYY/MMM/DD HH:mm:ss") )  );
-		 		pbModalInstance.close();
+	 			setTimeout( function () { pbModalInstance.close();; }, 1000 ); 
  			};
 
  			// In order to show the progress bar suitably, setInterval was necessary.
 			waitInterval( "onLoadEnd", _jsonParase, 1000 );
-			waitInterval( "jsonParseEnd", _createSummary, 1000 );
-			waitInterval( "summaryCreated", _finalyze, 1000 );
+			waitInterval( "jsonParseEnd", _createSummary, 1000, "abortAllProc" );
+			waitInterval( "summaryCreated", _finalyze, 1000,  "abortAllProc" );
 
 	 	}; // End of reader.onload.
 
@@ -212,7 +213,7 @@ moment.locale( myUtil.getBrowserLang() );
  			{
  				pbAbend( $scope, "Error during JSON Parse!" );
  				$scope.alerts = [{ type: "danger", msg: "This file does not seem JSON format! \nError Messeage: " + e  }];
- 				jsonParseErr = true;
+ 				abortAllProc = true;
  				return;
  			}
 
@@ -243,7 +244,7 @@ moment.locale( myUtil.getBrowserLang() );
 		 			$scope.summaryShow = false;
 	 				pbAbend( $scope, "This file is not a CDMC result!" );
 	 				$scope.alerts = [ { type: "danger", msg: "This file is not a CDMC result!" } ];
-	 				summaryCreateErr = true;
+	 				abortAllProc = true;
 	 				return;
 	 				break;
 	 		}
@@ -312,20 +313,34 @@ moment.locale( myUtil.getBrowserLang() );
 // ==========================================================================
 // Functions
 // ==========================================================================
-	waitInterval = function ( flag, func, timer )
+	waitInterval = function ( flag, func, timer, abortFlag )
 	{
 		var
 			_timerID;
 
 		_timerID = setInterval( function() 
 		{
+			if ( abortFlag !== undefined )
+			{
+				if ( eval( abortFlag ) ) 
+				{
+					clearInterval(_timerID);
+					_timerID = null;
+					return; 
+				};
+			}
+			
 			if ( eval(flag) )
 			{
 				clearInterval(_timerID);
 				_timerID = null;
 				func();
 			}
-			console.log("> Waiting in setInterval");
+			else
+			{
+				console.log("> Waiting in setInterval for " + flag );
+			}
+
 		}, timer );
 
 	};

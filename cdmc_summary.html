@@ -282,7 +282,7 @@
 	          <div>Status: {{remotingStatus}}</div>
 	          <uib-progressbar ng-class="(remotingProgress < 100) ? 'progress-striped active' : 'progress'" value="remotingProgress" type="{{pbType}}"></uib-progressbar>
 	      </div>
-	      <div class="modal-footer" ng-show="remotingProgress == 100">
+	      <div class="modal-footer" ng-show="remotingProgress == 100 && pbError">
 	          <button type="button" class="btn btn-info" ng-click="$close()">Close</button>
 	      </div>
 	  </script><!-- Modal for inProgress-->

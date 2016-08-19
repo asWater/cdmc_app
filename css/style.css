@@ -134,11 +134,13 @@ canvas
 	color: gold;
 }
 
+label.btn.btn-primary.ng-untouched.ng-valid.ng-not-empty.ng-dirty:active,
+label.btn.btn-primary.ng-pristine.ng-untouched.ng-valid.ng-not-empty:active,
 .btn-primary:active, .btn-primary.active:active
 {
 	background-color: darkred;
 	border-color: darkred;
-	color: gold;
+	color: red;
 }
 
 /*-------------------------------------
