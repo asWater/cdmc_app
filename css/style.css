@@ -4,6 +4,32 @@
   background-color: #FFF;
 }
 
+div.langSelect
+{
+	float: right;
+}
+div.langSelect > .btn:first-child 
+{
+	background-color: dodgerblue;
+	border-color: dodgerblue;
+}
+div.langSelect > .btn:first-child:hover
+{
+	color: white;
+	background-color: midnightblue;
+	border-color: midnightblue;
+}
+div.langSelect > .btn:first-child:active
+{
+	background-color: midnightblue;
+	border-color: midnightblue;
+}
+.btn .caret
+{
+	margin-left: 10px;
+	background-color: transparent;
+}
+
 div #dropArea, p.dropText
 {
 	background-color: skyblue;

@@ -5,7 +5,8 @@ moment.locale( myUtil.getBrowserLang() );
 
 (function ()
 {
-	var app = angular.module('myApp', [ 'ui.bootstrap','chart.js' ]),
+	var app = angular.module('myApp', [ 'ui.bootstrap','chart.js', 'pascalprecht.translate' ]),
+		lang,
 	    createCAsummary,
 	    createUCIAsummary,
 	    jsonCont,
@@ -36,12 +37,25 @@ moment.locale( myUtil.getBrowserLang() );
 	    summaryCreated = false,
 	    waitInterval;
 
-	app.controller('fileDropCtrl', ['$scope', '$uibModal', '$rootScope', function( $scope, $uibModal, $rootScope ){
+	app.config(['$translateProvider', function( $translateProvider ) {
+    	$translateProvider.useStaticFilesLoader({
+        	prefix : 'lang/lang_',
+        	suffix : '.json'
+    	});
+    	$translateProvider.preferredLanguage( lang = myUtil.getBrowserLang() === undefined ? "en" : myUtil.getBrowserLang() );
+	}]);
+
+	app.controller('fileDropCtrl', ['$scope', '$uibModal', '$translate', function( $scope, $uibModal, $translate ){
 	  $scope.fileNames = [];
 	  $scope.dragAreaShow = true;
 	  $scope.summaryShow = false;
 	  $scope.summaryCA_Show = false;
 	  $scope.summaryUCIA_Show = false;
+	  $scope.languages = {
+	  	en : "English", 
+	  	ja: "日本語"
+	  };
+	  $scope.currentLang = $scope.languages[$translate.proposedLanguage()];
 	 
 	  $scope.dragOver = function($event){
 	    $event.stopPropagation();
@@ -195,70 +209,24 @@ moment.locale( myUtil.getBrowserLang() );
 
 	 	}; // End of reader.onload.
 
-
-/* Version w/o setInterval -> Progress bar does not really change.
-	 	reader.onload = function ( e )
-	 	{
-	 		console.log("== File reader onload ==");
-	 		console.log("PHASE: Start of onload processing: " + $scope.remotingProgress + " Time: " + ( moment().format("YYYY/MMM/DD HH:mm:ss") ) );
- 			
- 			$scope.$apply( function() { $scope.remotingProgress = 80; $scope.remotingStatus = "JSON parsing";});
- 			console.log("PHASE: JSON parsing: " + $scope.remotingProgress + " Time: " + ( moment().format("YYYY/MMM/DD HH:mm:ss") ) );
-
- 			try
- 			{
- 				jsonCont = JSON.parse(e.target.result);
- 			}
- 			catch (e)
- 			{
- 				pbAbend( $scope, "Error during JSON Parse!" );
- 				$scope.alerts = [{ type: "danger", msg: "This file does not seem JSON format! \nError Messeage: " + e  }];
- 				abortAllProc = true;
- 				return;
- 			}
-
- 			jsonParseEnd = true;
-
- 			$scope.$apply( function () { $scope.remotingProgress = 90; $scope.remotingStatus = "Creating Summary"; }); 
- 			console.log( "PHASE: Creating Summary: " + $scope.remotingProgress + " Time: " + ( moment().format("YYYY/MMM/DD HH:mm:ss") ) );
-
-	 		$scope.summaryShow = true;
-
-	 		switch ( checkContents() )
-	 		{
-	 			case "CA":
-	 				// Clearing Analysis Contents
-	 				$scope.summaryCA_Show = true;
-	 				$scope.cdmcAnalysis = "CA";
-	 				createCAsummary( $scope );
-	 				break;
-	 			case "UCIA":
-	 				// UCIA Contents
-	 				$scope.summaryUCIA_Show = true;
-	 				$scope.cdmcAnalysis = "UCIA";
-    				$scope.radioModel = "Include";
-    				$scope.toggleChange();
-	 				break;
-	 			default: 
-	 				// Unknown Contents = "NA"
-		 			$scope.summaryShow = false;
-	 				pbAbend( $scope, "This file is not a CDMC result!" );
-	 				$scope.alerts = [ { type: "danger", msg: "This file is not a CDMC result!" } ];
-	 				abortAllProc = true;
-	 				return;
-	 				break;
-	 		}
-
-		 	summaryCreated = true;
-
-			$scope.$apply( function () { $scope.remotingProgress = 100; $scope.remotingStatus = "All processes were finished."; } );
- 			console.log( "PHASE: Finished: " + $scope.remotingProgress + " Time: " +  ( moment().format("YYYY/MMM/DD HH:mm:ss") )  );
-	 		pbModalInstance.close();
-
-	 	}; // End of reader.onload.
-*/
-
 	  }; // End of "$scope.drop" function
+
+	  $scope.selectLang = function ( langKey )
+	  {
+	  	//
+	    switch ( langKey )
+	    {
+	    	case "en":
+	    		break;
+	    	case "ja":
+	    		break;
+	    	default:
+	    		break;
+	    }
+
+	    $translate.use( langKey );
+	    $scope.currentLang = $scope.languages[$translate.proposedLanguage()];
+	  };
 
 
 	  $scope.toggleChange = function ()

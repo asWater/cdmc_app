@@ -2,12 +2,15 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>CDMC Summary (ver 1.0) </title>
+    <title>CDMC Summary (ver 1.1) </title>
 
     <!-- Angular -->
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.6/angular-animate.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/2.0.1/ui-bootstrap-tpls.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-translate/2.11.1/angular-translate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-translate/2.11.1/angular-translate-loader-static-files/angular-translate-loader-static-files.min.js"> </script>
+
     
     <!-- Jquery Relevant -->
     <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha256-cCueBR6CsyA4/9szpPfrX3s49M9vUU5BgtiJj06wt/s=" crossorigin="anonymous"></script>
@@ -42,10 +45,21 @@
   </head>
   <body>
     <div ng-app="myApp" ng-controller="fileDropCtrl">
-      <div id="dropArea" ng-show="dragAreaShow" ng-drop="drop($event)" ng-dragover="dragOver($event)">
-        <p class="dropText blinking"> Drop the file here </p>
-      </div>
-      <div class="alertMsg" uib-alert ng-repeat="alert in alerts" ng-class="'alert-' + alert.type" close="closeAlert($index)">{{alert.msg}}</div>
+    	<!-- Language Selection -->
+	    <div class="langSelect btn-group" uib-dropdown ng-show="(!alerts)">
+	        <button class="btn btn-primary" type="button" uib-dropdown-toggle>{{currentLang}} <span class="caret"></span> </button>
+	        <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="dropDownLang">
+		        <li ng-repeat="(key, value) in languages">
+		          <a ng-click="selectLang(key)">{{value}}</a>
+		        </li>
+	        </ul>
+	    </div>
+	    <!-- Drop Area -->
+        <div id="dropArea" ng-show="dragAreaShow" ng-drop="drop($event)" ng-dragover="dragOver($event)">
+        <!-- <p class="dropText blinking"> Drop the file here </p> -->
+        	<p class="dropText blinking" translate="dropArea.dropText"></p>
+      	</div>
+      	<div class="alertMsg" uib-alert ng-repeat="alert in alerts" ng-class="'alert-' + alert.type" close="closeAlert($index)">{{alert.msg}}</div>
       <!-- <ul ng-repeat="fileName in fileNames track by $index"> -->
       <!-- <span class="fileName"> {{fileName}} </span> -->
       <!-- Display object name -->
@@ -54,238 +68,240 @@
       	<li>{{objName.OBJ_NAME}}</li>
       </ul>
 	  -->
-	  <div id="summary" ng-show="summaryShow">
-	  	<div class="titleHeader">
-	  	 	<h2 class="titleString titleStrLarge"> CDMC Summary ( {{cdmcAnalysis}} ) </h2> 
-	  	 	<br> 
-	  	 	<h4 class="titleString"> based on </h4> 
-	  	 	<br> 
-	  	 	<h2 class="titleString"> {{fileName}} </h2>
-	  	</div>
-	 	<pre class="forSpace largeSpace"></pre>
-	 	<div id="summaryCA" ng-show="summaryCA_Show">
-			<!-- Customer Objects & Modifications -->
-		 	<div class="CustModObj">
-		 		<p class="paragraph2"> Customer Objects & Modification </p>
-			  	<table class="table table-bordered tableRound">
-			  		<tr class="tableHeader">
-			  			<td> Category </td>
-			  			<td> Object Counts </td>
-			  		</tr>
-			  		<tr>
-			  			<td class="tabRowHeader"> Customer Objects (Main) </td>
-			  			<td class="cellCenter"> {{objMain}} </td>
-			  		</tr>
-			  		<tr>
-			  			<td class="tabRowHeader"> Modified SAP Objects </td>
-			  			<td class="cellCenter"> {{objMod}} </td>
-			  		</tr>
-			  	</table>
-			  	<div class="tableChart">
-			  		<h4 class="header4"> Customer Objects in detail</h4>
-				  	<div id="custMainTab" class="pTab"></div>
-				  	<div id="custMainGraph" class="pGraph"></div>
-			  	</div>
-			  	<div class="tableChart">
-			  		<h4 class="header4"> Modifiled SAP Objects in detail </h4>
-				  	<div id="modObjTab" class="pTab"></div>
-				  	<div id="modObjGraph" class="pGraph"></div>
-			  	</div>
-			 </div>
-		 	<br>
-		  	<!-- Usage Analysis -->
-		  	<div class="UsageAnalysis">
-		  		<p class="paragraph2"> Usage Analysis </p>
-		  		<table class="table table-bordered tableRound">
-		  			<tr class="tableHeader">
-		  				<td> Category </td>
-		  				<td> Object counts </td>
-		  				<td> Percentage </td>
-		  			</tr>
-		  			<tr>
-		  				<td class="tabRowHeader"> Used Objects </td>
-		  				<td class="cellCenter"> {{usedObjCnt}} </td>
-		  				<td class="cellCenter"> {{usedObjCnt / objMain * 100 | number:2}} %</td>
-		  			</tr>
-		  			<tr>
-		  				<td class="tabRowHeader"> Unused Objects </td>
-		  				<td class="cellCenter"> {{unUsedObjCnt}} </td>
-		  				<td class="cellCenter"> {{unUsedObjCnt / objMain * 100 | number:2}} %</td>
-		  			</tr>
-		  			<tr>
-		  				<td class="tabRowHeader"> Not Supported </td>
-		  				<td class="cellCenter"> {{notSupObjCnt}} </td>
-		  				<td class="cellCenter"> {{notSupObjCnt / objMain * 100 | number:2}} %</td>
-		  			</tr>
-		  		</table>
-		  		<canvas id="pie" class="chart chart-pie" chart-data="usageData" chart-labels="usageLabels" chart-colors="usageColors" chart-options="options"></canvas>
-			  	<div class="tableChart">
-			  		<h4 class="header4"> Used Objects in detail </h4>
-				  	<div id="usedObjTab" class="pTab"></div>
-				  	<div id="usedObjGraph" class="pGraph"></div>
-			  	</div>
-			  	<div class="tableChart">
-			  		<h4 class="header4"> Unused Objects in detail </h4>
-				  	<div id="unUsedObjTab" class="pTab"></div>
-				  	<div id="unUsedObjGraph" class="pGraph"></div>
-			  	</div>
+	    <div id="summary" ng-show="summaryShow">
+		  	<div class="titleHeader">
+		  	 	<h2 class="titleString titleStrLarge" translate="summaryGeneral.title1st"> ( {{cdmcAnalysis}} ) </h2> 
+		  	 	<br> 
+		  	 	<h4 class="titleString"> based on </h4> 
+		  	 	<br> 
+		  	 	<h2 class="titleString"> {{fileName}} </h2>
 		  	</div>
-		  	<br>
-		  	<!-- Other Analyses --> 
-		  	<div class="OtherAnalyses">
-		  		<p class="paragraph2"> Other Analyses </p>
-		  		<table class="table table-bordered tableRound">
-		  			<tr class="tableHeader">
-		  				<td> Category </td>
-		  				<td> Object Counts </td>
-		  				<td> Calc Parameter </td>
-		  				<td> Percentage </td>
-		  			</tr>
-		  			<tr>
-		  				<td class="tabRowHeader"> Inactive Objects </td>
-		  				<td class="cellCenter"> {{inactiveObjCnt}} </td>
-		  				<td class="cellCenter"> Total Customer Main Objects: {{objMain}} </td>
-		  				<td class="cellCenter"> {{inactiveObjCnt / objMain * 100 | number:2}} %</td>
-		  			</tr>
-		  			<tr>
-		  				<td class="tabRowHeader"> Not Referred Objects </td>
-		  				<td class="cellCenter"> {{notRefObjCnt}} <br> (w/o PROG, TRAN) {{notRefObjCnt2}} </td>
-		  				<td class="cellCenter"> Total Customer Main Objects: {{objMain}} </td>
-		  				<td class="cellCenter"> {{notRefObjCnt / objMain * 100 | number:2}} % <br> (w/o PROG, TRAN) {{notRefObjCnt2 / objMain * 100 | number:2}} % </td>
-		  			</tr>
-		  			<tr>
-		  				<td class="tabRowHeader"> Duplicate Domains </td>
-		  				<td class="cellCenter"> {{dupDomCnt}} </td>
-		  				<td class="cellCenter"> Total Domains: {{domCnt}} </td>
-		  				<td class="cellCenter"> {{dupDomCnt / domCnt * 100 | number:2}} % </td>
-		  			</tr>
-		  			<tr>
-		  				<td class="tabRowHeader"> Tables Have No Entries </td>
-		  				<td class="cellCenter"> {{noEntryTab}} </td>
-		  				<td class="cellCenter"> Total Tables: {{tabCnt}} </td>
-		  				<td class="cellCenter"> {{noEntryTab / tabCnt * 100 | number:2}} % </td>
-		  			</tr>
-		  			<tr>
-		  				<td class="tabRowHeader"> Objects Have Syntax-Error </td>
-		  				<td class="cellCenter"> {{sntaxErrObjCnt}} </td>
-		  				<td class="cellCenter"> N/A </td>
-		  				<td class="cellCenter"> N/A </td>
-		  			</tr>
-		  			<tr>
-		  				<td class="tabRowHeader"> Objects Issued Short-Dump </td>
-		  				<td class="cellCenter"> {{shortDumpObjCnt}} </td>
-		  				<td class="cellCenter"> N/A </td>
-		  				<td class="cellCenter"> N/A </td>
-		  			</tr>
-		  		</table>
-		  	</div>
-		  	<br>
-		  	<!-- Cross Checks --> 
-		  	<div class="CrossCheck tableChart">
-		  		<p class="paragraph2"> Cross Checks </p>
-		  		<div class="pTab">
-			  		<h4 class="header4"> Not Referred & Not Used Objects </h4>
-			  		<div id="mixTab01"></div>
+		 	<pre class="forSpace largeSpace"></pre>
+		 	<div id="summaryCA" ng-show="summaryCA_Show">
+				<!-- Customer Objects & Modifications -->
+			 	<div class="CustModObj">
+			 		<p class="paragraph2"> Customer Objects & Modification </p>
+				  	<table class="table table-bordered tableRound">
+				  		<tr class="tableHeader">
+				  			<td> Category </td>
+				  			<td> Object Counts </td>
+				  		</tr>
+				  		<tr>
+				  			<td class="tabRowHeader"> Customer Objects (Main) </td>
+				  			<td class="cellCenter"> {{objMain}} </td>
+				  		</tr>
+				  		<tr>
+				  			<td class="tabRowHeader"> Modified SAP Objects </td>
+				  			<td class="cellCenter"> {{objMod}} </td>
+				  		</tr>
+				  	</table>
+				  	<div class="tableChart">
+				  		<h4 class="header4"> Customer Objects in detail</h4>
+					  	<div id="custMainTab" class="pTab"></div>
+					  	<div id="custMainGraph" class="pGraph"></div>
+				  	</div>
+				  	<div class="tableChart">
+				  		<h4 class="header4"> Modifiled SAP Objects in detail </h4>
+					  	<div id="modObjTab" class="pTab"></div>
+					  	<div id="modObjGraph" class="pGraph"></div>
+				  	</div>
+				 </div>
+			 	<br>
+			  	<!-- Usage Analysis -->
+			  	<div class="UsageAnalysis">
+			  		<p class="paragraph2"> Usage Analysis </p>
+			  		<table class="table table-bordered tableRound">
+			  			<tr class="tableHeader">
+			  				<td> Category </td>
+			  				<td> Object counts </td>
+			  				<td> Percentage </td>
+			  			</tr>
+			  			<tr>
+			  				<td class="tabRowHeader"> Used Objects </td>
+			  				<td class="cellCenter"> {{usedObjCnt}} </td>
+			  				<td class="cellCenter"> {{usedObjCnt / objMain * 100 | number:2}} %</td>
+			  			</tr>
+			  			<tr>
+			  				<td class="tabRowHeader"> Unused Objects </td>
+			  				<td class="cellCenter"> {{unUsedObjCnt}} </td>
+			  				<td class="cellCenter"> {{unUsedObjCnt / objMain * 100 | number:2}} %</td>
+			  			</tr>
+			  			<tr>
+			  				<td class="tabRowHeader"> Not Supported </td>
+			  				<td class="cellCenter"> {{notSupObjCnt}} </td>
+			  				<td class="cellCenter"> {{notSupObjCnt / objMain * 100 | number:2}} %</td>
+			  			</tr>
+			  		</table>
+			  		<canvas id="pie" class="chart chart-pie" chart-data="usageData" chart-labels="usageLabels" chart-colors="usageColors" chart-options="options"></canvas>
+				  	<div class="tableChart">
+				  		<h4 class="header4"> Used Objects in detail </h4>
+					  	<div id="usedObjTab" class="pTab"></div>
+					  	<div id="usedObjGraph" class="pGraph"></div>
+				  	</div>
+				  	<div class="tableChart">
+				  		<h4 class="header4"> Unused Objects in detail </h4>
+					  	<div id="unUsedObjTab" class="pTab"></div>
+					  	<div id="unUsedObjGraph" class="pGraph"></div>
+				  	</div>
 			  	</div>
-			  	<div class="pTab pGraph">
-			  		<h4 class="header4"> Not Referred & Duplicate Domain </h4>
-			  		<div id="mixTab02"></div>
+			  	<br>
+			  	<!-- Other Analyses --> 
+			  	<div class="OtherAnalyses">
+			  		<p class="paragraph2"> Other Analyses </p>
+			  		<table class="table table-bordered tableRound">
+			  			<tr class="tableHeader">
+			  				<td> Category </td>
+			  				<td> Object Counts </td>
+			  				<td> Calc Parameter </td>
+			  				<td> Percentage </td>
+			  			</tr>
+			  			<tr>
+			  				<td class="tabRowHeader"> Inactive Objects </td>
+			  				<td class="cellCenter"> {{inactiveObjCnt}} </td>
+			  				<td class="cellCenter"> Total Customer Main Objects: {{objMain}} </td>
+			  				<td class="cellCenter"> {{inactiveObjCnt / objMain * 100 | number:2}} %</td>
+			  			</tr>
+			  			<tr>
+			  				<td class="tabRowHeader"> Not Referred Objects </td>
+			  				<td class="cellCenter"> {{notRefObjCnt}} <br> (w/o PROG, TRAN) {{notRefObjCnt2}} </td>
+			  				<td class="cellCenter"> Total Customer Main Objects: {{objMain}} </td>
+			  				<td class="cellCenter"> {{notRefObjCnt / objMain * 100 | number:2}} % <br> (w/o PROG, TRAN) {{notRefObjCnt2 / objMain * 100 | number:2}} % </td>
+			  			</tr>
+			  			<tr>
+			  				<td class="tabRowHeader"> Duplicate Domains </td>
+			  				<td class="cellCenter"> {{dupDomCnt}} </td>
+			  				<td class="cellCenter"> Total Domains: {{domCnt}} </td>
+			  				<td class="cellCenter"> {{dupDomCnt / domCnt * 100 | number:2}} % </td>
+			  			</tr>
+			  			<tr>
+			  				<td class="tabRowHeader"> Tables Have No Entries </td>
+			  				<td class="cellCenter"> {{noEntryTab}} </td>
+			  				<td class="cellCenter"> Total Tables: {{tabCnt}} </td>
+			  				<td class="cellCenter"> {{noEntryTab / tabCnt * 100 | number:2}} % </td>
+			  			</tr>
+			  			<tr>
+			  				<td class="tabRowHeader"> Objects Have Syntax-Error </td>
+			  				<td class="cellCenter"> {{sntaxErrObjCnt}} </td>
+			  				<td class="cellCenter"> N/A </td>
+			  				<td class="cellCenter"> N/A </td>
+			  			</tr>
+			  			<tr>
+			  				<td class="tabRowHeader"> Objects Issued Short-Dump </td>
+			  				<td class="cellCenter"> {{shortDumpObjCnt}} </td>
+			  				<td class="cellCenter"> N/A </td>
+			  				<td class="cellCenter"> N/A </td>
+			  			</tr>
+			  		</table>
 			  	</div>
-			  	<div class="pTab pGraph">
-			  		<h4 class="header4"> Not Referred & Tables Have No Entries </h4>
-			  		<div id="mixTab03"></div>
+			  	<br>
+			  	<!-- Cross Checks --> 
+			  	<div class="CrossCheck tableChart">
+			  		<p class="paragraph2"> Cross Checks </p>
+			  		<div class="pTab">
+				  		<h4 class="header4"> Not Referred & Not Used Objects </h4>
+				  		<div id="mixTab01"></div>
+				  	</div>
+				  	<div class="pTab pGraph">
+				  		<h4 class="header4"> Not Referred & Duplicate Domain </h4>
+				  		<div id="mixTab02"></div>
+				  	</div>
+				  	<div class="pTab pGraph">
+				  		<h4 class="header4"> Not Referred & Tables Have No Entries </h4>
+				  		<div id="mixTab03"></div>
+				  	</div>
 			  	</div>
-		  	</div>
-		  	<br>
-		  </div> <!-- CA Summary -->
-		  
-		  <!-- UCIA Summary -->
-		  <div id="summaryUCIA" ng-show="summaryUCIA_Show">
-		  	<!-- Usage Analysis -->
-		  	<div class="btn-group">
-		        <label class="btn btn-primary" ng-model="radioModel" uib-btn-radio="'Include'" ng-change="toggleChange()">Include Indirectly Referred SAP Objects</label>
-		        <label class="btn btn-primary" ng-model="radioModel" uib-btn-radio="'Exclude'" ng-change="toggleChange()">Exclude Indirectly Referred SAP Objects</label>
-		    </div>
-		    <pre class="forSpace littleSpace"></pre>
-		  	<pre> {{summaryMode}} Target = {{objLength}} </pre>
-		    <pre class="forSpace"></pre>
-		  	<div class="impactOverview">
-		  		<p class="paragraph2"> Impacted Customer Object </p>
-		  		<table class="table table-bordered tableRound">
-		  			<tr class="tableHeader">
-		  				<td> Category </td>
-		  				<td> Object counts </td>
-		  				<td> Percentage </td>
-		  			</tr>
-		  			<tr>
-		  				<td class="tabRowHeader"> Not Impacted Object </td>
-		  				<td class="cellCenter"> {{greenObjCnt}} </td>
-		  				<td class="cellCenter"> {{greenObjCnt / uciaObjMain * 100 | number:2}} %</td>
-		  			</tr>
-		  			<tr>
-		  				<td class="tabRowHeader"> Impacted Yellow Objects </td>
-		  				<td class="cellCenter"> {{yellowObjCnt}} </td>
-		  				<td class="cellCenter"> {{yellowObjCnt / uciaObjMain * 100 | number:2}} %</td>
-		  			</tr>
-		  			<tr>
-		  				<td class="tabRowHeader"> Impacted Red Objects </td>
-		  				<td class="cellCenter"> {{redObjCnt}} </td>
-		  				<td class="cellCenter"> {{redObjCnt / uciaObjMain * 100 | number:2}} %</td>
-		  			</tr>
-		  		</table>
-		  		<canvas id="pie" class="chart chart-pie" chart-data="impactData" chart-labels="impactLabels" chart-colors="impactColors" chart-options="options"></canvas>
-		  		<br>
-			  	<div class="tableChart">
-			  		<h4 class="header4"> Impacted Customer Objects in detail</h4>
-				  	<div id="compImpactTab" class="pTab"></div>
-				  	<div id="compImpactGraph" class="pGraph"></div>
+			  	<br>
+			  </div> <!-- CA Summary -->
+			  
+			  <!-- UCIA Summary -->
+			  <div id="summaryUCIA" ng-show="summaryUCIA_Show">
+			  	<!-- Usage Analysis -->
+			  	<div class="btn-group">
+			        <label class="btn btn-primary" ng-model="radioModel" uib-btn-radio="'Include'" ng-change="toggleChange()">Include Indirectly Referred SAP Objects</label>
+			        <label class="btn btn-primary" ng-model="radioModel" uib-btn-radio="'Exclude'" ng-change="toggleChange()">Exclude Indirectly Referred SAP Objects</label>
+			    </div>
+			    <pre class="forSpace littleSpace"></pre>
+			  	<pre> {{summaryMode}} Target = {{objLength}} </pre>
+			    <pre class="forSpace"></pre>
+			  	<div class="impactOverview">
+			  		<p class="paragraph2"> Impacted Customer Object </p>
+			  		<table class="table table-bordered tableRound">
+			  			<tr class="tableHeader">
+			  				<td> Category </td>
+			  				<td> Object counts </td>
+			  				<td> Percentage </td>
+			  			</tr>
+			  			<tr>
+			  				<td class="tabRowHeader"> Not Impacted Object </td>
+			  				<td class="cellCenter"> {{greenObjCnt}} </td>
+			  				<td class="cellCenter"> {{greenObjCnt / uciaObjMain * 100 | number:2}} %</td>
+			  			</tr>
+			  			<tr>
+			  				<td class="tabRowHeader"> Impacted Yellow Objects </td>
+			  				<td class="cellCenter"> {{yellowObjCnt}} </td>
+			  				<td class="cellCenter"> {{yellowObjCnt / uciaObjMain * 100 | number:2}} %</td>
+			  			</tr>
+			  			<tr>
+			  				<td class="tabRowHeader"> Impacted Red Objects </td>
+			  				<td class="cellCenter"> {{redObjCnt}} </td>
+			  				<td class="cellCenter"> {{redObjCnt / uciaObjMain * 100 | number:2}} %</td>
+			  			</tr>
+			  		</table>
+			  		<canvas id="pie" class="chart chart-pie" chart-data="impactData" chart-labels="impactLabels" chart-colors="impactColors" chart-options="options"></canvas>
+			  		<br>
+				  	<div class="tableChart">
+				  		<h4 class="header4"> Impacted Customer Objects in detail</h4>
+					  	<div id="compImpactTab" class="pTab"></div>
+					  	<div id="compImpactGraph" class="pGraph"></div>
+				  	</div>
 			  	</div>
-		  	</div>
-		  	<br>
-		  	<!-- Changed SAP Objects Referred By Customer Objects -->
-		  	<div class="changeSAPobj">
-		  		<p class="paragraph2"> Changed SAP Objects Referred By Customer Objects </p>
-			  	<div class="tableChart">
-				  	<div id="changedSAPTab" class="pTab"></div>
-				  	<div id="changedSAPGraph" class="pGraph"></div>
-			  	</div>	  	
-		  	</div>
-		  	<br>
-		  	<!-- Change Categories of SAP Objects -->
-		  	<div class="changeCategory">
-		  		<p class="paragraph2"> Change Categories of SAP Objects </p>
-			  	<div class="tableChart">
-				  	<div id="changeCategoryTab" class="pTab"></div>
-			  	</div>	  	
-		  	</div>
-		  	<br>  	
-		  	<!-- Changed SAP Objects Referred By Customer Objects -->
-		  	<div class="matrixCustSAP">
-		  		<p class="paragraph2"> Matrix Customer Objects vs SAP Objects </p>
-			  	<div class="tableChart">
-				  	<div id="marixCvSTab" class="pTab"></div>
-			  	</div>	  	
-		  	</div>
-		  	<br>
-		  </div> <!-- UCIA Summary -->
-	  </div> <!-- Summay DIV -->
-	  <!-- Modal for inProgress -->
-	  <script type="text/ng-template" id="progressBar">
-	      <div class="modal-header">
-	         <h class="header4">
-	            <span ng-show="remotingProgress < 100">In Process</span>
-	            <span ng-show="remotingProgress === 100 && !pbError">Completed</span>
-	            <span ng-show="remotingProgress === 100 && pbError">Error</span>
-	         </h>
-	      </div>
-	      <div class="modal-body">
-	          <div>Status: {{remotingStatus}}</div>
-	          <uib-progressbar ng-class="(remotingProgress < 100) ? 'progress-striped active' : 'progress'" value="remotingProgress" type="{{pbType}}"></uib-progressbar>
-	      </div>
-	      <div class="modal-footer" ng-show="remotingProgress == 100 && pbError">
-	          <button type="button" class="btn btn-info" ng-click="$close()">Close</button>
-	      </div>
-	  </script><!-- Modal for inProgress-->
-    </div> <!-- DIV for ng-app & ng-controller-->
+			  	<br>
+			  	<!-- Changed SAP Objects Referred By Customer Objects -->
+			  	<div class="changeSAPobj">
+			  		<p class="paragraph2"> Changed SAP Objects Referred By Customer Objects </p>
+				  	<div class="tableChart">
+					  	<div id="changedSAPTab" class="pTab"></div>
+					  	<div id="changedSAPGraph" class="pGraph"></div>
+				  	</div>	  	
+			  	</div>
+			  	<br>
+			  	<!-- Change Categories of SAP Objects -->
+			  	<div class="changeCategory">
+			  		<p class="paragraph2"> Change Categories of SAP Objects </p>
+				  	<div class="tableChart">
+					  	<div id="changeCategoryTab" class="pTab"></div>
+				  	</div>	  	
+			  	</div>
+			  	<br>  	
+			  	<!-- Changed SAP Objects Referred By Customer Objects -->
+			  	<div class="matrixCustSAP">
+			  		<p class="paragraph2"> Matrix Customer Objects vs SAP Objects </p>
+				  	<div class="tableChart">
+					  	<div id="marixCvSTab" class="pTab"></div>
+				  	</div>	  	
+			  	</div>
+			  	<br>
+			  </div> <!-- UCIA Summary -->
+		 </div> <!-- Summay DIV -->
+
+		  <!-- Modal for inProgress -->
+		  <script type="text/ng-template" id="progressBar">
+		      <div class="modal-header">
+		         <h class="header4">
+		            <span ng-show="remotingProgress < 100">In Process</span>
+		            <span ng-show="remotingProgress === 100 && !pbError">Completed</span>
+		            <span ng-show="remotingProgress === 100 && pbError">Error</span>
+		         </h>
+		      </div>
+		      <div class="modal-body">
+		          <div>Status: {{remotingStatus}}</div>
+		          <uib-progressbar ng-class="(remotingProgress < 100) ? 'progress-striped active' : 'progress'" value="remotingProgress" type="{{pbType}}"></uib-progressbar>
+		      </div>
+		      <div class="modal-footer" ng-show="remotingProgress == 100 && pbError">
+		          <button type="button" class="btn btn-info" ng-click="$close()">Close</button>
+		      </div>
+		  </script><!-- Modal for inProgress-->
+
+	</div> <!-- DIV for ng-app & ng-controller-->
   </body>
 </html>

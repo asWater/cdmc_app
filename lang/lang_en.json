@@ -1,0 +1,65 @@
+{
+	"dropArea":
+	{
+		"dropText": "Drop the file here"
+	},
+	"summaryGeneral":
+	{
+		"title1st": "CDMC Summary",
+		"title2nd": "based on",
+		"tabCol_category": "Category",
+		"tabCol_objCnt": "Object Counts",
+		"tabCol_percent": "Percentage"
+	},
+	"summaryCA":
+	{
+		"p_custMod": "Customer Objects & Modification",
+
+		"tabRow_cust": "Customer Objects (Main)",
+		"tabRow_mod": "Modified SAP Objects",
+		"h_custDetail": "Customer Objects in detail",
+		"h_modDetail": "Modified SAP Objects in detail",
+		"p_usageAna": "Usage Analysis",
+		"tabRow_Used": "Used Objects",
+		"tabRow_unUsed": "Unused Objects",
+		"tabRow_NotSupport": "Not Supported",
+		"h_usedObj": "Used Objects in detail",
+		"h_unUsed": "Unused Objects in detail",
+		"p_otherAna": "Other Analyses",
+		"tabCol": "Calc Parameter",
+		"tabRow_inactive": "Inactive Objects",
+		"tabRow_totalCus": "Total Customer Main Objects: ",
+		"tabRow_notRef": "Not Referred Objects",
+		"tabRow_dupDom": "Duplicate Domains",
+		"tabRow_totalDom": "Total Domains: ",
+		"tabRow_noEntryTab": "Tables Have No Entries",
+		"tabRow_totalTab": "Total Tables: ",
+		"tabRow_syntaxErr": "Objects Have Syntax-Error",
+		"tabRow_shortDump": "Objects Issued Short-Dump",
+		"p_crossCheck": "Cross Checks",
+		"h_notRef-notUsed": "Not Referred & Not Used Objects",
+		"h_notRef-dupDom": "Not Referred & Duplicate Domain",
+		"h_notRef-noEntry": "Not Referred & Tables Have No Entries"
+	},
+	"summaryUCIA":
+	{
+		"includeIndir": "Include Indirectly Referred SAP Objects",
+		"excludeIndir": "Exclude Indirectly Referred SAP Objects",
+		"p_impactCust": "Impacted Customer Objects",
+		"tabRow_notImpact": "Not Impacted Objects",
+		"tabRow_impactYellow": "Impacted Yellow Objects",
+		"tabRow_impactRed": "Impacted Red Objects",
+		"h_impactCust": "Impacted Customer Objects in detail",
+		"p_changedSAP": "Changed SAP Objects Referred By Customer Objects",
+		"p_changeCategory": "Change Categories of SAP Objects",
+		"p_matrixCustSAP": "Matrix Customer Objects vs SAP Objects"
+	},
+	"progressBar":
+	{
+		"stat_inProcess": "In Process",
+		"stat_completed": "Completed",
+		"stat_error": "Error",
+		"status": "Status: ",
+		"btn_close": "Close"
+	}
+}
