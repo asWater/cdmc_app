@@ -48,60 +48,52 @@
     	<!-- Language Selection -->
 	    <div class="langSelect btn-group" uib-dropdown ng-show="(!alerts)">
 	        <button class="btn btn-primary" type="button" uib-dropdown-toggle>{{currentLang}} <span class="caret"></span> </button>
-	        <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="dropDownLang">
-		        <li ng-repeat="(key, value) in languages">
+	        <ul class="dropdown-menu langDropDown" uib-dropdown-menu role="menu" aria-labelledby="dropDownLang">
+		        <li class="langList" ng-repeat="(key, value) in languages">
 		          <a ng-click="selectLang(key)">{{value}}</a>
 		        </li>
 	        </ul>
 	    </div>
+	    
 	    <!-- Drop Area -->
         <div id="dropArea" ng-show="dragAreaShow" ng-drop="drop($event)" ng-dragover="dragOver($event)">
-        <!-- <p class="dropText blinking"> Drop the file here </p> -->
         	<p class="dropText blinking" translate="dropArea.dropText"></p>
       	</div>
       	<div class="alertMsg" uib-alert ng-repeat="alert in alerts" ng-class="'alert-' + alert.type" close="closeAlert($index)">{{alert.msg}}</div>
-      <!-- <ul ng-repeat="fileName in fileNames track by $index"> -->
-      <!-- <span class="fileName"> {{fileName}} </span> -->
-      <!-- Display object name -->
-      <!--
-      <ul ng-repeat="objName in objNames track by $index">
-      	<li>{{objName.OBJ_NAME}}</li>
-      </ul>
-	  -->
+ 		
+ 		<!-- Summary Area -->
 	    <div id="summary" ng-show="summaryShow">
 		  	<div class="titleHeader">
-		  	 	<h2 class="titleString titleStrLarge" translate="summaryGeneral.title1st"> ( {{cdmcAnalysis}} ) </h2> 
-		  	 	<br> 
-		  	 	<h4 class="titleString"> based on </h4> 
-		  	 	<br> 
-		  	 	<h2 class="titleString"> {{fileName}} </h2>
+		  		<h2 class="titleString titleStrLarge" translate="summaryGeneral.title1st" translate-values="{ cdmcAnalysis: cdmcAnalysis }"></h2>
+		  	 	<h4 class="titleString" translate="summaryGeneral.title2nd"></h4> 
+		  	 	<h3 class="titleString">{{fileName}}</h2>
 		  	</div>
 		 	<pre class="forSpace largeSpace"></pre>
 		 	<div id="summaryCA" ng-show="summaryCA_Show">
 				<!-- Customer Objects & Modifications -->
 			 	<div class="CustModObj">
-			 		<p class="paragraph2"> Customer Objects & Modification </p>
+			 		<p class="paragraph2" translate="summaryCA.p_custMod"></p>
 				  	<table class="table table-bordered tableRound">
 				  		<tr class="tableHeader">
-				  			<td> Category </td>
-				  			<td> Object Counts </td>
+				  			<td translate="summaryGeneral.tabCol_category"></td>
+				  			<td translate="summaryGeneral.tabCol_objCnt"></td>
 				  		</tr>
 				  		<tr>
-				  			<td class="tabRowHeader"> Customer Objects (Main) </td>
+				  			<td class="tabRowHeader" translate="summaryCA.tabRow_cust"></td>
 				  			<td class="cellCenter"> {{objMain}} </td>
 				  		</tr>
 				  		<tr>
-				  			<td class="tabRowHeader"> Modified SAP Objects </td>
+				  			<td class="tabRowHeader" translate="summaryCA.tabRow_mod"></td>
 				  			<td class="cellCenter"> {{objMod}} </td>
 				  		</tr>
 				  	</table>
 				  	<div class="tableChart">
-				  		<h4 class="header4"> Customer Objects in detail</h4>
+				  		<h4 class="header4" translate="summaryCA.h_custDetail"></h4>
 					  	<div id="custMainTab" class="pTab"></div>
 					  	<div id="custMainGraph" class="pGraph"></div>
 				  	</div>
 				  	<div class="tableChart">
-				  		<h4 class="header4"> Modifiled SAP Objects in detail </h4>
+				  		<h4 class="header4" translate="summaryCA.h_modDetail"></h4>
 					  	<div id="modObjTab" class="pTab"></div>
 					  	<div id="modObjGraph" class="pGraph"></div>
 				  	</div>
@@ -109,37 +101,37 @@
 			 	<br>
 			  	<!-- Usage Analysis -->
 			  	<div class="UsageAnalysis">
-			  		<p class="paragraph2"> Usage Analysis </p>
+			  		<p class="paragraph2" translate="summaryCA.p_usageAna"></p>
 			  		<table class="table table-bordered tableRound">
 			  			<tr class="tableHeader">
-			  				<td> Category </td>
-			  				<td> Object counts </td>
-			  				<td> Percentage </td>
+			  				<td translate="summaryGeneral.tabCol_category"></td>
+			  				<td translate="summaryGeneral.tabCol_objCnt"></td>
+			  				<td translate="summaryGeneral.tabCol_percent"></td>
 			  			</tr>
 			  			<tr>
-			  				<td class="tabRowHeader"> Used Objects </td>
+			  				<td class="tabRowHeader" translate="summaryCA.tabRow_used"></td>
 			  				<td class="cellCenter"> {{usedObjCnt}} </td>
 			  				<td class="cellCenter"> {{usedObjCnt / objMain * 100 | number:2}} %</td>
 			  			</tr>
 			  			<tr>
-			  				<td class="tabRowHeader"> Unused Objects </td>
+			  				<td class="tabRowHeader" translate="summaryCA.tabRow_unUsed"></td>
 			  				<td class="cellCenter"> {{unUsedObjCnt}} </td>
 			  				<td class="cellCenter"> {{unUsedObjCnt / objMain * 100 | number:2}} %</td>
 			  			</tr>
 			  			<tr>
-			  				<td class="tabRowHeader"> Not Supported </td>
+			  				<td class="tabRowHeader" translate="summaryCA.tabRow_notSupport"></td>
 			  				<td class="cellCenter"> {{notSupObjCnt}} </td>
 			  				<td class="cellCenter"> {{notSupObjCnt / objMain * 100 | number:2}} %</td>
 			  			</tr>
 			  		</table>
 			  		<canvas id="pie" class="chart chart-pie" chart-data="usageData" chart-labels="usageLabels" chart-colors="usageColors" chart-options="options"></canvas>
 				  	<div class="tableChart">
-				  		<h4 class="header4"> Used Objects in detail </h4>
+				  		<h4 class="header4" translate="summaryCA.h_usedObj"></h4>
 					  	<div id="usedObjTab" class="pTab"></div>
 					  	<div id="usedObjGraph" class="pGraph"></div>
 				  	</div>
 				  	<div class="tableChart">
-				  		<h4 class="header4"> Unused Objects in detail </h4>
+				  		<h4 class="header4" translate="summaryCA.h_unUsed"></h4>
 					  	<div id="unUsedObjTab" class="pTab"></div>
 					  	<div id="unUsedObjGraph" class="pGraph"></div>
 				  	</div>
@@ -147,66 +139,66 @@
 			  	<br>
 			  	<!-- Other Analyses --> 
 			  	<div class="OtherAnalyses">
-			  		<p class="paragraph2"> Other Analyses </p>
+			  		<p class="paragraph2" translate="summaryCA.p_otherAna"></p>
 			  		<table class="table table-bordered tableRound">
 			  			<tr class="tableHeader">
-			  				<td> Category </td>
-			  				<td> Object Counts </td>
-			  				<td> Calc Parameter </td>
-			  				<td> Percentage </td>
+			  				<td translate="summaryGeneral.tabCol_category"></td>
+			  				<td translate="summaryGeneral.tabCol_objCnt"></td>
+			  				<td translate="summaryCA.tabCol_calc"></td>
+			  				<td translate="summaryGeneral.tabCol_percent"></td>
 			  			</tr>
 			  			<tr>
-			  				<td class="tabRowHeader"> Inactive Objects </td>
+			  				<td class="tabRowHeader" translate="summaryCA.tabRow_inactive"></td>
 			  				<td class="cellCenter"> {{inactiveObjCnt}} </td>
-			  				<td class="cellCenter"> Total Customer Main Objects: {{objMain}} </td>
+			  				<td class="cellCenter" translate="summaryCA.tabRow_totalCus" translate-values="{ objMain: objMain }"></td>
 			  				<td class="cellCenter"> {{inactiveObjCnt / objMain * 100 | number:2}} %</td>
 			  			</tr>
 			  			<tr>
-			  				<td class="tabRowHeader"> Not Referred Objects </td>
+			  				<td class="tabRowHeader" translate="summaryCA.tabRow_notRef"></td>
 			  				<td class="cellCenter"> {{notRefObjCnt}} <br> (w/o PROG, TRAN) {{notRefObjCnt2}} </td>
-			  				<td class="cellCenter"> Total Customer Main Objects: {{objMain}} </td>
+			  				<td class="cellCenter" translate="summaryCA.tabRow_totalCus" translate-values="{ objMain: objMain }"></td>
 			  				<td class="cellCenter"> {{notRefObjCnt / objMain * 100 | number:2}} % <br> (w/o PROG, TRAN) {{notRefObjCnt2 / objMain * 100 | number:2}} % </td>
 			  			</tr>
 			  			<tr>
-			  				<td class="tabRowHeader"> Duplicate Domains </td>
+			  				<td class="tabRowHeader" translate="summaryCA.tabRow_dupDom"></td>
 			  				<td class="cellCenter"> {{dupDomCnt}} </td>
-			  				<td class="cellCenter"> Total Domains: {{domCnt}} </td>
+			  				<td class="cellCenter" translate="summaryCA.tabRow_totalDom" translate-values="{ totalDom: domCnt }"></td>
 			  				<td class="cellCenter"> {{dupDomCnt / domCnt * 100 | number:2}} % </td>
 			  			</tr>
 			  			<tr>
-			  				<td class="tabRowHeader"> Tables Have No Entries </td>
+			  				<td class="tabRowHeader" translate="summaryCA.tabRow_noEntryTab"></td>
 			  				<td class="cellCenter"> {{noEntryTab}} </td>
-			  				<td class="cellCenter"> Total Tables: {{tabCnt}} </td>
+			  				<td class="cellCenter" translate="summaryCA.tabRow_totalTab" translate-values="{ totalTab: tabCnt }"></td>
 			  				<td class="cellCenter"> {{noEntryTab / tabCnt * 100 | number:2}} % </td>
 			  			</tr>
 			  			<tr>
-			  				<td class="tabRowHeader"> Objects Have Syntax-Error </td>
+			  				<td class="tabRowHeader" translate="summaryCA.tabRow_syntaxErr"></td>
 			  				<td class="cellCenter"> {{sntaxErrObjCnt}} </td>
-			  				<td class="cellCenter"> N/A </td>
-			  				<td class="cellCenter"> N/A </td>
+			  				<td class="cellCenter" translate="summaryGeneral.tabVal_NA"></td>
+			  				<td class="cellCenter" translate="summaryGeneral.tabVal_NA"></td>
 			  			</tr>
 			  			<tr>
-			  				<td class="tabRowHeader"> Objects Issued Short-Dump </td>
+			  				<td class="tabRowHeader" translate="summaryCA.tabRow_shortDump"></td>
 			  				<td class="cellCenter"> {{shortDumpObjCnt}} </td>
-			  				<td class="cellCenter"> N/A </td>
-			  				<td class="cellCenter"> N/A </td>
+			  				<td class="cellCenter" translate="summaryGeneral.tabVal_NA"></td>
+			  				<td class="cellCenter" translate="summaryGeneral.tabVal_NA"></td>
 			  			</tr>
 			  		</table>
 			  	</div>
 			  	<br>
 			  	<!-- Cross Checks --> 
 			  	<div class="CrossCheck tableChart">
-			  		<p class="paragraph2"> Cross Checks </p>
+			  		<p class="paragraph2" translate="summaryCA.p_crossCheck"></p>
 			  		<div class="pTab">
-				  		<h4 class="header4"> Not Referred & Not Used Objects </h4>
+				  		<h4 class="header4" translate="summaryCA.h_notRef-notUsed"></h4>
 				  		<div id="mixTab01"></div>
 				  	</div>
 				  	<div class="pTab pGraph">
-				  		<h4 class="header4"> Not Referred & Duplicate Domain </h4>
+				  		<h4 class="header4" translate="summaryCA.h_notRef-dupDom"></h4>
 				  		<div id="mixTab02"></div>
 				  	</div>
 				  	<div class="pTab pGraph">
-				  		<h4 class="header4"> Not Referred & Tables Have No Entries </h4>
+				  		<h4 class="header4" translate="summaryCA.h_notRef-noEntry"></h4>
 				  		<div id="mixTab03"></div>
 				  	</div>
 			  	</div>
@@ -217,32 +209,32 @@
 			  <div id="summaryUCIA" ng-show="summaryUCIA_Show">
 			  	<!-- Usage Analysis -->
 			  	<div class="btn-group">
-			        <label class="btn btn-primary" ng-model="radioModel" uib-btn-radio="'Include'" ng-change="toggleChange()">Include Indirectly Referred SAP Objects</label>
-			        <label class="btn btn-primary" ng-model="radioModel" uib-btn-radio="'Exclude'" ng-change="toggleChange()">Exclude Indirectly Referred SAP Objects</label>
+			        <label class="btn btn-primary" ng-model="radioModel" uib-btn-radio="'Include'" ng-change="toggleChange()">{{translate('summaryUCIA.includeIndir')}}</label>
+			        <label class="btn btn-primary" ng-model="radioModel" uib-btn-radio="'Exclude'" ng-change="toggleChange()">{{translate('summaryUCIA.excludeIndir')}}</label>
 			    </div>
 			    <pre class="forSpace littleSpace"></pre>
 			  	<pre> {{summaryMode}} Target = {{objLength}} </pre>
 			    <pre class="forSpace"></pre>
 			  	<div class="impactOverview">
-			  		<p class="paragraph2"> Impacted Customer Object </p>
+			  		<p class="paragraph2" translate="summaryUCIA.p_impactCust"></p>
 			  		<table class="table table-bordered tableRound">
 			  			<tr class="tableHeader">
-			  				<td> Category </td>
-			  				<td> Object counts </td>
-			  				<td> Percentage </td>
+			  				<td translate="summaryGeneral.tabCol_category"></td>
+			  				<td translate="summaryGeneral.tabCol_objCnt"></td>
+			  				<td translate="summaryGeneral.tabCol_percent"></td>
 			  			</tr>
 			  			<tr>
-			  				<td class="tabRowHeader"> Not Impacted Object </td>
+			  				<td class="tabRowHeader" translate="summaryUCIA.tabRow_notImpact"></td>
 			  				<td class="cellCenter"> {{greenObjCnt}} </td>
 			  				<td class="cellCenter"> {{greenObjCnt / uciaObjMain * 100 | number:2}} %</td>
 			  			</tr>
 			  			<tr>
-			  				<td class="tabRowHeader"> Impacted Yellow Objects </td>
+			  				<td class="tabRowHeader" translate="summaryUCIA.tabRow_impactYellow"></td>
 			  				<td class="cellCenter"> {{yellowObjCnt}} </td>
 			  				<td class="cellCenter"> {{yellowObjCnt / uciaObjMain * 100 | number:2}} %</td>
 			  			</tr>
 			  			<tr>
-			  				<td class="tabRowHeader"> Impacted Red Objects </td>
+			  				<td class="tabRowHeader" translate="summaryUCIA.tabRow_impactRed"></td>
 			  				<td class="cellCenter"> {{redObjCnt}} </td>
 			  				<td class="cellCenter"> {{redObjCnt / uciaObjMain * 100 | number:2}} %</td>
 			  			</tr>
@@ -250,7 +242,7 @@
 			  		<canvas id="pie" class="chart chart-pie" chart-data="impactData" chart-labels="impactLabels" chart-colors="impactColors" chart-options="options"></canvas>
 			  		<br>
 				  	<div class="tableChart">
-				  		<h4 class="header4"> Impacted Customer Objects in detail</h4>
+				  		<h4 class="header4" translate="summaryUCIA.h_impactCust"></h4>
 					  	<div id="compImpactTab" class="pTab"></div>
 					  	<div id="compImpactGraph" class="pGraph"></div>
 				  	</div>
@@ -258,7 +250,7 @@
 			  	<br>
 			  	<!-- Changed SAP Objects Referred By Customer Objects -->
 			  	<div class="changeSAPobj">
-			  		<p class="paragraph2"> Changed SAP Objects Referred By Customer Objects </p>
+			  		<p class="paragraph2" translate="summaryUCIA.p_changedSAP"></p>
 				  	<div class="tableChart">
 					  	<div id="changedSAPTab" class="pTab"></div>
 					  	<div id="changedSAPGraph" class="pGraph"></div>
@@ -267,7 +259,7 @@
 			  	<br>
 			  	<!-- Change Categories of SAP Objects -->
 			  	<div class="changeCategory">
-			  		<p class="paragraph2"> Change Categories of SAP Objects </p>
+			  		<p class="paragraph2" translate="summaryUCIA.p_changeCategory"></p>
 				  	<div class="tableChart">
 					  	<div id="changeCategoryTab" class="pTab"></div>
 				  	</div>	  	
@@ -275,7 +267,7 @@
 			  	<br>  	
 			  	<!-- Changed SAP Objects Referred By Customer Objects -->
 			  	<div class="matrixCustSAP">
-			  		<p class="paragraph2"> Matrix Customer Objects vs SAP Objects </p>
+			  		<p class="paragraph2" translate="summaryUCIA.p_matrixCustSAP"></p>
 				  	<div class="tableChart">
 					  	<div id="marixCvSTab" class="pTab"></div>
 				  	</div>	  	
@@ -288,17 +280,17 @@
 		  <script type="text/ng-template" id="progressBar">
 		      <div class="modal-header">
 		         <h class="header4">
-		            <span ng-show="remotingProgress < 100">In Process</span>
-		            <span ng-show="remotingProgress === 100 && !pbError">Completed</span>
-		            <span ng-show="remotingProgress === 100 && pbError">Error</span>
+		            <span ng-show="remotingProgress < 100" translate="progressBar.stat_inProcess"></span>
+		            <span ng-show="remotingProgress === 100 && !pbError" translate="progressBar.stat_completed"></span>
+		            <span ng-show="remotingProgress === 100 && pbError" translate="progressBar.stat_error"></span>
 		         </h>
 		      </div>
 		      <div class="modal-body">
-		          <div>Status: {{remotingStatus}}</div>
+		          <div translate="progressBar.status" translate-values="{ stat: remotingStatus }"></div>
 		          <uib-progressbar ng-class="(remotingProgress < 100) ? 'progress-striped active' : 'progress'" value="remotingProgress" type="{{pbType}}"></uib-progressbar>
 		      </div>
 		      <div class="modal-footer" ng-show="remotingProgress == 100 && pbError">
-		          <button type="button" class="btn btn-info" ng-click="$close()">Close</button>
+		          <button type="button" class="btn btn-info" ng-click="$close()" translate="progressBar.btn_close"></button>
 		      </div>
 		  </script><!-- Modal for inProgress-->
 

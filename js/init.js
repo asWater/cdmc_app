@@ -81,14 +81,14 @@ moment.locale( myUtil.getBrowserLang() );
 	 	}
 	 	else
 	 	{
-	 		$scope.alerts = [{ type: "danger", msg: "Drop only 1 file!" }];
+	 		$scope.alerts = [{ type: "danger", msg: $translate.instant("alert.multiDrop") }];
 	 		return;
 	 	}
 
 	 	if (("" + f.type).indexOf("text/") == 0)
 	 	{
 			$scope.pbType = "success";
-			$scope.remotingProgress = 1; $scope.remotingStatus = "File type is checked";
+			$scope.remotingProgress = 1; $scope.remotingStatus = $translate.instant("progressBar.statMsgFileChk");
 			pbModalInstance = $uibModal.open({
 				templateUrl: "progressBar",
 				backdrop: "static",
@@ -99,7 +99,7 @@ moment.locale( myUtil.getBrowserLang() );
 	 	}
 	 	else
 	 	{
-	 		$scope.alerts = [{ type: "danger", msg: "This file type cannnot be processed! Only TXT file is valid." }];
+	 		$scope.alerts = [{ type: "danger", msg: $translate.instant("alert.fileTypeErr") }];
 	 		return;
 	 	}
 
@@ -107,7 +107,7 @@ moment.locale( myUtil.getBrowserLang() );
 
 	 	reader.onloadstart = function ( e )
 	 	{
-			$scope.$apply( function () { $scope.remotingProgress = 2; $scope.remotingStatus = "Start file reading"; } );
+			$scope.$apply( function () { $scope.remotingProgress = 2; $scope.remotingStatus = $translate.instant("progressBar.statMsgStart"); } );
 	 	};
 
 	 	reader.onprogress = function ( evt )
@@ -116,7 +116,7 @@ moment.locale( myUtil.getBrowserLang() );
 		    $scope.$apply ( function ()
 		    {
 			    if ( evt.lengthComputable ) {
-					$scope.remotingProgress = ( Math.round((evt.loaded / evt.total) * 100) * 0.7 );  $scope.remotingStatus = "Reading File...";
+					$scope.remotingProgress = ( Math.round((evt.loaded / evt.total) * 100) * 0.7 );  $scope.remotingStatus = $translate.instant("progressBar.statMsgRead");
 					console.log( Math.round( (evt.loaded / evt.total) * 100) );
 			    }	    	
 		    });
@@ -136,7 +136,7 @@ moment.locale( myUtil.getBrowserLang() );
  			
 	 		var _jsonParase = function () 
 	 		{
-	 			$scope.$apply( function() { $scope.remotingProgress = 80; $scope.remotingStatus = "JSON parsing";});
+	 			$scope.$apply( function() { $scope.remotingProgress = 80; $scope.remotingStatus = $translate.instant("progressBar.statMsgParse"); } );
 	 			console.log("PHASE: JSON parsing: " + $scope.remotingProgress + " Time: " + ( moment().format("YYYY/MMM/DD HH:mm:ss") ) );
 
 	 			try
@@ -145,8 +145,8 @@ moment.locale( myUtil.getBrowserLang() );
 	 			}
 	 			catch (e)
 	 			{
-	 				pbAbend( $scope, "Error during JSON Parse!" );
-	 				$scope.alerts = [{ type: "danger", msg: "This file does not seem JSON format! \nError Messeage: " + e  }];
+	 				pbAbend( $scope, $translate.instant("progressBar.statMsgJsonErr") );
+	 				$scope.alerts = [{ type: "danger", msg: $translate.instant("alert.parseErr") + e  }];
 	 				abortAllProc = true;
 	 				return;
 	 			}
@@ -159,7 +159,7 @@ moment.locale( myUtil.getBrowserLang() );
  			{
  				if ( abortAllProc ) return;
 
-	 			$scope.$apply( function () { $scope.remotingProgress = 90; $scope.remotingStatus = "Creating Summary"; }); 
+	 			$scope.$apply( function () { $scope.remotingProgress = 90; $scope.remotingStatus = $translate.instant("progressBar.statMsgCreateSum"); }); 
 	 			console.log( "PHASE: Creating Summary: " + $scope.remotingProgress + " Time: " + ( moment().format("YYYY/MMM/DD HH:mm:ss") ) );
 
 		 		$scope.summaryShow = true;
@@ -182,8 +182,8 @@ moment.locale( myUtil.getBrowserLang() );
 		 			default: 
 		 				// Unknown Contents = "NA"
 			 			$scope.summaryShow = false;
-		 				pbAbend( $scope, "This file is not a CDMC result!" );
-		 				$scope.alerts = [ { type: "danger", msg: "This file is not a CDMC result!" } ];
+		 				pbAbend( $scope, $translate.instant("progressBar.statMsgCdmcErr") );
+		 				$scope.alerts = [ { type: "danger", msg: $translate.instant("alert.notCdmcErr") } ];
 		 				abortAllProc = true;
 		 				return;
 		 				break;
@@ -197,7 +197,7 @@ moment.locale( myUtil.getBrowserLang() );
  			{
  				if ( abortAllProc ) return;
 
-				$scope.$apply( function () { $scope.remotingProgress = 100; $scope.remotingStatus = "All processes were finished."; } );
+				$scope.$apply( function () { $scope.remotingProgress = 100; $scope.remotingStatus = $translate.instant("progressBar.statMsgFinish"); } );
 	 			console.log( "PHASE: Finished: " + $scope.remotingProgress + " Time: " +  ( moment().format("YYYY/MMM/DD HH:mm:ss") )  );
 	 			setTimeout( function () { pbModalInstance.close();; }, 1000 ); 
  			};
@@ -248,6 +248,8 @@ moment.locale( myUtil.getBrowserLang() );
 	    		break;
 	    }
 	  };
+
+	  $scope.translate = function ( id ) { return $translate.instant(id); };
 
 	  $scope.closeAlert = function( index ) { $scope.alerts.splice(index, 1); location.reload(); };
 

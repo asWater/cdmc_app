@@ -5,35 +5,35 @@
 	},
 	"summaryGeneral":
 	{
-		"title1st": "CDMC Summary",
+		"title1st": "CDMC Summary ( {{cdmcAnalysis}} )",
 		"title2nd": "based on",
 		"tabCol_category": "Category",
 		"tabCol_objCnt": "Object Counts",
-		"tabCol_percent": "Percentage"
+		"tabCol_percent": "Percentage",
+		"tabVal_NA": "N/A"
 	},
 	"summaryCA":
 	{
 		"p_custMod": "Customer Objects & Modification",
-
-		"tabRow_cust": "Customer Objects (Main)",
+		"tabRow_cust": "Customer Objects (Main Objects)",
 		"tabRow_mod": "Modified SAP Objects",
 		"h_custDetail": "Customer Objects in detail",
 		"h_modDetail": "Modified SAP Objects in detail",
 		"p_usageAna": "Usage Analysis",
-		"tabRow_Used": "Used Objects",
+		"tabRow_used": "Used Objects",
 		"tabRow_unUsed": "Unused Objects",
-		"tabRow_NotSupport": "Not Supported",
+		"tabRow_notSupport": "Not Supported",
 		"h_usedObj": "Used Objects in detail",
 		"h_unUsed": "Unused Objects in detail",
 		"p_otherAna": "Other Analyses",
-		"tabCol": "Calc Parameter",
+		"tabCol_calc": "Calc Parameter",
 		"tabRow_inactive": "Inactive Objects",
-		"tabRow_totalCus": "Total Customer Main Objects: ",
+		"tabRow_totalCus": "Total Customer Main Objects: {{objMain}}",
 		"tabRow_notRef": "Not Referred Objects",
 		"tabRow_dupDom": "Duplicate Domains",
-		"tabRow_totalDom": "Total Domains: ",
+		"tabRow_totalDom": "Total Domains: {{totalDom}}",
 		"tabRow_noEntryTab": "Tables Have No Entries",
-		"tabRow_totalTab": "Total Tables: ",
+		"tabRow_totalTab": "Total Tables: {{totalTab}}",
 		"tabRow_syntaxErr": "Objects Have Syntax-Error",
 		"tabRow_shortDump": "Objects Issued Short-Dump",
 		"p_crossCheck": "Cross Checks",
@@ -59,7 +59,22 @@
 		"stat_inProcess": "In Process",
 		"stat_completed": "Completed",
 		"stat_error": "Error",
-		"status": "Status: ",
+		"status": "Status: {{stat}}",
+		"statMsgFileChk": "File type is checked",
+		"statMsgStart": "Start file reading",
+		"statMsgRead": "Reading File",
+		"statMsgParse": "JSON parsing",
+		"statMsgCreateSum": "Creating Summary",
+		"statMsgFinish": "All processes were finished",
+		"statMsgJsonErr": "Error during JSON Parse",
+		"statMsgCdmcErr": "Error during CDMC contents",
 		"btn_close": "Close"
+	},
+	"alert":
+	{
+		"multiDrop": "Drop only 1 file!",
+		"fileTypeErr": "This file type cannnot be processed! Only TXT file is valid",
+		"parseErr": "This file does not seem JSON format! \nError Messeage: ",
+		"notCdmcErr": "This file is not a CDMC result!"
 	}
 }

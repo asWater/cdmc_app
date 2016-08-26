@@ -1,11 +1,80 @@
 {
 	"dropArea":
 	{
-		"dropText": "ファイルをここにドロップしてください"
+		"dropText": "ここにファイルをドロップしてください"
 	},
 	"summaryGeneral":
 	{
-		"title1st": "CDMC サマリー",
-		"title2nd": "based on"
+		"title1st": "CDMC サマリー ( {{cdmcAnalysis}} )",
+		"title2nd": "based on",
+		"tabCol_category": "カテゴリ",
+		"tabCol_objCnt": "オブジェクト数",
+		"tabCol_percent": "パーセンテージ",
+		"tabVal_NA": "N/A"
+	},
+	"summaryCA":
+	{
+		"p_custMod": "カスタマオブジェクトとモディフィケーション",
+		"tabRow_cust": "カスタマオブジェクト (メインオブジェクト)",
+		"tabRow_mod": "モディフィケーションオブジェクト",
+		"h_custDetail": "カスタマオブジェクトの詳細",
+		"h_modDetail": "モディフィケーションオブジェクトの詳細",
+		"p_usageAna": "使用分析",
+		"tabRow_used": "使用されていたオブジェクト",
+		"tabRow_unUsed": "使用されていなかったオブジェクト",
+		"tabRow_notSupport": "使用分析不可オブジェクト",
+		"h_usedObj": "使用されていたオブジェクトの詳細",
+		"h_unUsed": "使用されていなかったオブジェクトの詳細",
+		"p_otherAna": "その他の分析",
+		"tabCol_calc": "計算対象",
+		"tabRow_inactive": "有効化されていないオブジェクト",
+		"tabRow_totalCus": "カスタマオブジェクト総数（メインオブジェクト）: {{objMain}}",
+		"tabRow_notRef": "参照されていないオブジェクト",
+		"tabRow_dupDom": "重複ドメイン",
+		"tabRow_totalDom": "ドメイン総数: {{totalDom}}",
+		"tabRow_noEntryTab": "エントリーが空のテーブル",
+		"tabRow_totalTab": "テーブル総数: {{totalTab}}",
+		"tabRow_syntaxErr": "シンタックスエラーがあるオブジェクト",
+		"tabRow_shortDump": "ショートダンプを発生させたオブジェクト",
+		"p_crossCheck": "複合チェック",
+		"h_notRef-notUsed": "参照されておらず、使用もされていなかったオブジェクト",
+		"h_notRef-dupDom": "参照されておらず、かつ重複しているドメイン",
+		"h_notRef-noEntry": "参照されておらず、かつエントリーが空のテーブル"
+	},
+	"summaryUCIA":
+	{
+		"includeIndir": "間接的に参照している SAP オブジェクトを含める",
+		"excludeIndir": "間接的に参照している SAP オブジェクトを除く",
+		"p_impactCust": "影響を受けるであろうカスタマオブジェクト",
+		"tabRow_notImpact": "影響を受けないカスタマオブジェクト",
+		"tabRow_impactYellow": "影響を受けるであろうカスタマオブジェクト: カテゴリ黄色",
+		"tabRow_impactRed": "影響を受けるであろうカスタマオブジェクト: カテゴリ赤色",
+		"h_impactCust": "影響を受けるであろうカスタマオブジェクトの詳細",
+		"p_changedSAP": "カスタマオブジェクトから参照されていて、変更される SAP オブジェクト",
+		"p_changeCategory": "SAP オブジェクトの変更の種類",
+		"p_matrixCustSAP": "カスタマオブジェクトと変更される SAP オブジェクト"
+	},
+	"progressBar":
+	{
+		"stat_inProcess": "処理中",
+		"stat_completed": "完了",
+		"stat_error": "エラー",
+		"status": "ステータス: {{stat}}",
+		"statMsgFileChk": "ファイルタイプのチェック中",
+		"statMsgStart": "ファイルの読み込み開始",
+		"statMsgRead": "ファイルの読み込み中",
+		"statMsgParse": "JSON パース中",
+		"statMsgCreateSum": "サマリーの作成中",
+		"statMsgFinish": "全ての処理が完了しました",
+		"statMsgJsonErr": "JSON パース中にエラーが発生しました",
+		"statMsgCdmcErr": "CDMC の内容確認でエラーが発生しました",
+		"btn_close": "閉じる"
+	},
+	"alert":
+	{
+		"multiDrop": "1つのファイルのみドロップしてください",
+		"fileTypeErr": "このファイルタイプは処理できません、TXTファイルのみ処理可能です",
+		"parseErr": "このファイルは JSON 形式のファイルではないです。\n エラーメッセージ: ",
+		"notCdmcErr": "このファイルは CDMC の結果内容ではないようです"
 	}
 }

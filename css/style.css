@@ -2,11 +2,13 @@
   font-family: verdana, Meiryo, sans-serif;
   font-size  : 12pt;
   background-color: #FFF;
+  margin: 2px;
 }
 
 div.langSelect
 {
 	float: right;
+	margin-right: 5px;
 }
 div.langSelect > .btn:first-child 
 {
@@ -26,9 +28,13 @@ div.langSelect > .btn:first-child:active
 }
 .btn .caret
 {
-	margin-left: 10px;
 	background-color: transparent;
 }
+.langList
+{
+	cursor: pointer;
+}
+
 
 div #dropArea, p.dropText
 {
@@ -84,6 +90,11 @@ div #summary
 {
 	margin: 0%;
 	font-weight: bolder;
+}
+
+.inlineDisp
+{
+	display: inline;
 }
 
 .titleStrLarge
