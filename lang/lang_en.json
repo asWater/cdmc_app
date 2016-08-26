@@ -45,6 +45,9 @@
 	{
 		"includeIndir": "Include Indirectly Referred SAP Objects",
 		"excludeIndir": "Exclude Indirectly Referred SAP Objects",
+		"sumInclIndir": "Summary with including indirectly SAP referred objects. Total Objects: ",
+		"sumExclIndir": "Summary with excluding indirectly SAP referred objects. Total Objects: ",
+		"sumMsgIndir": "{{InOrEx}}{{objCnt}}",
 		"p_impactCust": "Impacted Customer Objects",
 		"tabRow_notImpact": "Not Impacted Objects",
 		"tabRow_impactYellow": "Impacted Yellow Objects",

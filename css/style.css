@@ -116,6 +116,12 @@ div #summary
 	vertical-align: middle;
 	font-size: 20px;
 	background-color: orange;
+	margin-top: 50px;
+}
+
+.firstParagraph
+{
+	margin-top: 0px;
 }
 
 .forSpace
@@ -196,7 +202,13 @@ td.pvtVals, td.pvtAxisContainer
 
 div.tableChart
 {
-	overflow: hidden;
+	overflow: scroll;
+	margin-top: 50px;
+}
+
+div.tabCharCross
+{
+	margin-top: 20px;
 }
 
 div.tableChart:before, div.tableChart:after

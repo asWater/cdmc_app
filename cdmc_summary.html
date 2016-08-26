@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>CDMC Summary (ver 1.1) </title>
+    <title>CDMC Summary (v 1.1.1) </title>
 
     <!-- Angular -->
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
@@ -69,10 +69,12 @@
 		  	 	<h3 class="titleString">{{fileName}}</h2>
 		  	</div>
 		 	<pre class="forSpace largeSpace"></pre>
+
+		 	<!-- CA Summary -->
 		 	<div id="summaryCA" ng-show="summaryCA_Show">
 				<!-- Customer Objects & Modifications -->
 			 	<div class="CustModObj">
-			 		<p class="paragraph2" translate="summaryCA.p_custMod"></p>
+			 		<p class="paragraph2 firstParagraph" translate="summaryCA.p_custMod"></p>
 				  	<table class="table table-bordered tableRound">
 				  		<tr class="tableHeader">
 				  			<td translate="summaryGeneral.tabCol_category"></td>
@@ -90,12 +92,12 @@
 				  	<div class="tableChart">
 				  		<h4 class="header4" translate="summaryCA.h_custDetail"></h4>
 					  	<div id="custMainTab" class="pTab"></div>
-					  	<div id="custMainGraph" class="pGraph"></div>
+					  	<div id="custMainGraph" class="pGraph rightGraph"></div>
 				  	</div>
 				  	<div class="tableChart">
 				  		<h4 class="header4" translate="summaryCA.h_modDetail"></h4>
 					  	<div id="modObjTab" class="pTab"></div>
-					  	<div id="modObjGraph" class="pGraph"></div>
+					  	<div id="modObjGraph" class="pGraph rightGraph"></div>
 				  	</div>
 				 </div>
 			 	<br>
@@ -128,12 +130,12 @@
 				  	<div class="tableChart">
 				  		<h4 class="header4" translate="summaryCA.h_usedObj"></h4>
 					  	<div id="usedObjTab" class="pTab"></div>
-					  	<div id="usedObjGraph" class="pGraph"></div>
+					  	<div id="usedObjGraph" class="pGraph rightGraph"></div>
 				  	</div>
 				  	<div class="tableChart">
 				  		<h4 class="header4" translate="summaryCA.h_unUsed"></h4>
 					  	<div id="unUsedObjTab" class="pTab"></div>
-					  	<div id="unUsedObjGraph" class="pGraph"></div>
+					  	<div id="unUsedObjGraph" class="pGraph rightGraph"></div>
 				  	</div>
 			  	</div>
 			  	<br>
@@ -187,20 +189,22 @@
 			  	</div>
 			  	<br>
 			  	<!-- Cross Checks --> 
-			  	<div class="CrossCheck tableChart">
+			  	<div class="CrossCheck">
 			  		<p class="paragraph2" translate="summaryCA.p_crossCheck"></p>
-			  		<div class="pTab">
-				  		<h4 class="header4" translate="summaryCA.h_notRef-notUsed"></h4>
-				  		<div id="mixTab01"></div>
-				  	</div>
-				  	<div class="pTab pGraph">
-				  		<h4 class="header4" translate="summaryCA.h_notRef-dupDom"></h4>
-				  		<div id="mixTab02"></div>
-				  	</div>
-				  	<div class="pTab pGraph">
-				  		<h4 class="header4" translate="summaryCA.h_notRef-noEntry"></h4>
-				  		<div id="mixTab03"></div>
-				  	</div>
+			  		<div class="tableChart tabCharCross">
+				  		<div class="pTab">
+					  		<h4 class="header4" translate="summaryCA.h_notRef-notUsed"></h4>
+					  		<div id="mixTab01"></div>
+					  	</div>
+					  	<div class="pTab pGraph">
+					  		<h4 class="header4" translate="summaryCA.h_notRef-dupDom"></h4>
+					  		<div id="mixTab02"></div>
+					  	</div>
+					  	<div class="pTab pGraph">
+					  		<h4 class="header4" translate="summaryCA.h_notRef-noEntry"></h4>
+					  		<div id="mixTab03"></div>
+					  	</div>
+					</div>
 			  	</div>
 			  	<br>
 			  </div> <!-- CA Summary -->
@@ -213,7 +217,7 @@
 			        <label class="btn btn-primary" ng-model="radioModel" uib-btn-radio="'Exclude'" ng-change="toggleChange()">{{translate('summaryUCIA.excludeIndir')}}</label>
 			    </div>
 			    <pre class="forSpace littleSpace"></pre>
-			  	<pre> {{summaryMode}} Target = {{objLength}} </pre>
+			    <pre> {{summaryMode}} {{objLength}} </pre>
 			    <pre class="forSpace"></pre>
 			  	<div class="impactOverview">
 			  		<p class="paragraph2" translate="summaryUCIA.p_impactCust"></p>
@@ -244,7 +248,7 @@
 				  	<div class="tableChart">
 				  		<h4 class="header4" translate="summaryUCIA.h_impactCust"></h4>
 					  	<div id="compImpactTab" class="pTab"></div>
-					  	<div id="compImpactGraph" class="pGraph"></div>
+					  	<div id="compImpactGraph" class="pGraph rightGraph"></div>
 				  	</div>
 			  	</div>
 			  	<br>
@@ -253,7 +257,7 @@
 			  		<p class="paragraph2" translate="summaryUCIA.p_changedSAP"></p>
 				  	<div class="tableChart">
 					  	<div id="changedSAPTab" class="pTab"></div>
-					  	<div id="changedSAPGraph" class="pGraph"></div>
+					  	<div id="changedSAPGraph" class="pGraph rightGraph"></div>
 				  	</div>	  	
 			  	</div>
 			  	<br>

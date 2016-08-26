@@ -24,8 +24,10 @@ moment.locale( myUtil.getBrowserLang() );
 	    subFlag = false,
 	    setUsageAnalysis,
 	    setOtherAnalyses,
+	    setIndirMsg,
 	    getCustObjMainFilter,
 	    getUniqueComp2Keys,
+	    getGraphHeight,
 	    getImpactObjFilter,
 	    setImpactAnalysis,
 	    pbModalInstance,
@@ -43,6 +45,7 @@ moment.locale( myUtil.getBrowserLang() );
         	suffix : '.json'
     	});
     	$translateProvider.preferredLanguage( lang = myUtil.getBrowserLang() === undefined ? "en" : myUtil.getBrowserLang() );
+    	$translateProvider.useSanitizeValueStrategy('escape');
 	}]);
 
 	app.controller('fileDropCtrl', ['$scope', '$uibModal', '$translate', function( $scope, $uibModal, $translate ){
@@ -213,19 +216,10 @@ moment.locale( myUtil.getBrowserLang() );
 
 	  $scope.selectLang = function ( langKey )
 	  {
-	  	//
-	    switch ( langKey )
-	    {
-	    	case "en":
-	    		break;
-	    	case "ja":
-	    		break;
-	    	default:
-	    		break;
-	    }
-
 	    $translate.use( langKey );
 	    $scope.currentLang = $scope.languages[$translate.proposedLanguage()];
+
+	    $scope.summaryMode = setIndirMsg( $scope.radioModel, $translate );
 	  };
 
 
@@ -235,13 +229,13 @@ moment.locale( myUtil.getBrowserLang() );
 	    switch ( $scope.radioModel )
 	    {
 	    	case "Include":
-	    		$scope.summaryMode = "Summary with including indirectly SAP referred objects.";
-	    		$scope.objLength = jsonCont.length;
+    			$scope.summaryMode = $translate.instant("summaryUCIA.sumInclIndir");
+    			$scope.objLength = jsonCont.length;
 	    		createUCIAsummary( $scope, jsonCont );
 	    		break;
 	    	case "Exclude":
-	    		$scope.summaryMode = "Summary with excluding indirectly SAP referred objects.";
-	    		$scope.objLength = getImpactObjFilter( jsonCont, "EXCLUDE-INDIRECT" ).length;
+	    		$scope.summaryMode = $translate.instant("summaryUCIA.sumExclIndir");
+	    		$scope.objLength = getImpactObjFilter( jsonCont, "EXCLUDE-INDIRECT" ).length;    			
 	    		createUCIAsummary( $scope, getImpactObjFilter( jsonCont, "EXCLUDE-INDIRECT" ));
 	    		break;
 	    	default:
@@ -283,6 +277,22 @@ moment.locale( myUtil.getBrowserLang() );
 // ==========================================================================
 // Functions
 // ==========================================================================
+	setIndirMsg = function ( radio, translate )
+	{
+	    switch ( radio )
+	    {
+	    	case "Include":
+    			return translate.instant("summaryUCIA.sumInclIndir");
+	    		break;
+	    	case "Exclude":
+	    		return translate.instant("summaryUCIA.sumExclIndir");
+	    		break;
+	    	default:
+	    		break;
+	    }
+
+	};
+
 	waitInterval = function ( flag, func, timer, abortFlag )
 	{
 		var
@@ -615,7 +625,36 @@ moment.locale( myUtil.getBrowserLang() );
 			default:
 				break;
 		}
-	}
+	};
+
+	getGraphHeight = function ( jsonObj, key1, key2 )
+	{
+		var
+			compObj,
+			defaultHeight = 492,
+			tempHeight;
+
+		jsonObj.sort( function ( a, b ) {
+			if ( a.OBJ_TYPE > b.OBJ_TYPE ) return 1;
+			if ( a.OBJ_TYPE < b.OBJ_TYPE ) return -1;
+			if ( a.SUB_TYPE > b.SUB_TYPE ) return 1;
+			if ( a.SUB_TYPE < b.SUB_TYPE ) return -1;
+			return 0;
+		});
+
+		compObj = getUniqueComp2Keys( jsonObj, key1, key2 );
+		tempHeight = compObj.length * 12;
+
+		if ( tempHeight > defaultHeight )
+		{
+			return tempHeight;
+		}
+		else
+		{
+			return undefined;
+		}
+
+	};
 
 
 	objTypePivot = function ( jsonObj, area, subFlag ) 
@@ -689,10 +728,18 @@ moment.locale( myUtil.getBrowserLang() );
 
 	objTypePivotGraph = function ( jsonObj, area, subFlag )
 	{
-		var derivers = $.pivotUtilities.derivers;
+		var 
+			derivers = $.pivotUtilities.derivers,
+			graphHeigh;
+
+
 
 		if ( subFlag )
 		{
+			// Check how many sub objects are counted in order to determine the height of graph.
+			// If the number of sub objects are hight, it is necessary to use higher graph.			
+			graphHeigh = getGraphHeight( jsonObj, "OBJ_TYPE", "SUB_TYPE" );
+
 			$(area).pivotUI( jsonObj, 
 			{
 				rows: ["OBJ_TYPE", "SUB_TYPE"],
@@ -702,8 +749,12 @@ moment.locale( myUtil.getBrowserLang() );
 				renderers: $.extend(
 					$.pivotUtilities.renderers,
 					$.pivotUtilities.c3_renderers
-					)
-				
+					),
+				rendererOptions: {
+					c3: { 
+						size: { height: graphHeigh }
+					}
+				}
 			});		
 		}
 		else

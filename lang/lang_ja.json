@@ -45,6 +45,9 @@
 	{
 		"includeIndir": "間接的に参照している SAP オブジェクトを含める",
 		"excludeIndir": "間接的に参照している SAP オブジェクトを除く",
+		"sumInclIndir": "間接的に参照している SAP オブジェクトを含めたサマリー。 オブジェクト総数: ",
+		"sumExclIndir": "間接的に参照している SAP オブジェクトを除いたサマリー。 オブジェクト総数: ",
+		"sumMsgIndir": "{{InOrEx}}{{objCnt}}",
 		"p_impactCust": "影響を受けるであろうカスタマオブジェクト",
 		"tabRow_notImpact": "影響を受けないカスタマオブジェクト",
 		"tabRow_impactYellow": "影響を受けるであろうカスタマオブジェクト: カテゴリ黄色",
