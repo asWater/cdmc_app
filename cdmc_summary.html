@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>CDMC Summary (v 1.1.1) </title>
+    <title>CDMC Summary (v 1.2.0) </title>
 
     <!-- Angular -->
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
@@ -11,7 +11,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-translate/2.11.1/angular-translate.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-translate/2.11.1/angular-translate-loader-static-files/angular-translate-loader-static-files.min.js"> </script>
 
-    
     <!-- Jquery Relevant -->
     <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha256-cCueBR6CsyA4/9szpPfrX3s49M9vUU5BgtiJj06wt/s=" crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.min.js" integrity="sha256-eGE6blurk5sHj+rmkfsGYeKyZx3M4bG+ZlFyA7Kns7E=" crossorigin="anonymous"></script>
@@ -23,12 +22,33 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/c3/0.4.11/c3.min.js"></script>
 	<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/pivottable/2.1.0/d3_renderers.min.js"> </script> -->
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/pivottable/2.1.0/c3_renderers.min.js"> </script>
-	
-	<!-- Other Javascript Utilitiy Libraries -->
+
+	<!-- Moment & Chart relevant -->
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.14.1/moment-with-locales.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.2.1/Chart.min.js"></script>
 	<script src="https://cdn.jsdelivr.net/angular.chartjs/1.0.0/angular-chart.min.js"></script>
-	
+
+	<!-- PDF Generation -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.2.61/jspdf.min.js"></script>
+	<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.2.61/jspdf.debug.js"></script> -->
+	<!--
+	<script src="https://cdn.rawgit.com/MrRio/jsPDF/master/plugins/addimage.js"></script>
+	<script src="https://cdn.rawgit.com/MrRio/jsPDF/master/plugins/from_html.js"></script>
+	<script src="https://cdn.rawgit.com/MrRio/jsPDF/master/plugins/split_text_to_size.js"></script>
+	<script src="https://cdn.rawgit.com/MrRio/jsPDF/master/plugins/standard_fonts_metrics.js"></script>
+	<script src="https://cdn.rawgit.com/MrRio/jsPDF/master/plugins/svg.js"></script>
+	-->
+
+	<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script> -->
+	<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.5.0-alpha2/html2canvas.min.js"></script> -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.5.0-beta1/html2canvas.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.5.0-beta1/html2canvas.svg.js"></script>
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2014-11-29/FileSaver.min.js"></script>
+
+	<script src="https://cdn.jsdelivr.net/canvg/1.4.0/rgbcolor.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/canvg/1.4.0/canvg.min.js"></script>
+
 	<!-- My scripts -->
 	<script src="js/myUtil.js"></script>
 	<script src="js/init.js"></script>
@@ -62,7 +82,8 @@
       	<div class="alertMsg" uib-alert ng-repeat="alert in alerts" ng-class="'alert-' + alert.type" close="closeAlert($index)">{{alert.msg}}</div>
  		
  		<!-- Summary Area -->
-	    <div id="summary" ng-show="summaryShow">
+	    <div id="summary" class="summary" ng-show="summaryShow">
+	    	<div id="create_pdf" class="btn btn-primary" ng-click="createPDF()" translate="summaryGeneral.createPDF"></div>
 		  	<div class="titleHeader">
 		  		<h2 class="titleString titleStrLarge" translate="summaryGeneral.title1st" translate-values="{ cdmcAnalysis: cdmcAnalysis }"></h2>
 		  	 	<h4 class="titleString" translate="summaryGeneral.title2nd"></h4> 

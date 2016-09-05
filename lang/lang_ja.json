@@ -10,7 +10,8 @@
 		"tabCol_category": "カテゴリ",
 		"tabCol_objCnt": "オブジェクト数",
 		"tabCol_percent": "パーセンテージ",
-		"tabVal_NA": "N/A"
+		"tabVal_NA": "N/A",
+		"createPDF": "PDF 作成"
 	},
 	"summaryCA":
 	{

@@ -10,7 +10,8 @@
 		"tabCol_category": "Category",
 		"tabCol_objCnt": "Object Counts",
 		"tabCol_percent": "Percentage",
-		"tabVal_NA": "N/A"
+		"tabVal_NA": "N/A",
+		"createPDF": "Create PDF"
 	},
 	"summaryCA":
 	{

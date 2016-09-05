@@ -37,7 +37,8 @@ moment.locale( myUtil.getBrowserLang() );
 	    jsonParseEnd = false,
 	    abortAllProc = false,
 	    summaryCreated = false,
-	    waitInterval;
+	    waitInterval,
+	    convSVG;
 
 	app.config(['$translateProvider', function( $translateProvider ) {
     	$translateProvider.useStaticFilesLoader({
@@ -246,6 +247,43 @@ moment.locale( myUtil.getBrowserLang() );
 	  $scope.translate = function ( id ) { return $translate.instant(id); };
 
 	  $scope.closeAlert = function( index ) { $scope.alerts.splice(index, 1); location.reload(); };
+
+	  $scope.createPDF = function ()
+	  {
+	  	convSVG();
+
+	  	html2canvas( document.getElementById( "summary" ), 
+	  	{
+	  		onrendered: function ( canvas )
+	  		{
+	  			var
+	  				imgWidth = 210,
+	  				imgHeight = canvas.height * imgWidth / canvas.width,
+	  				pageHeight = 295,
+	  				heightLeft = imgHeight,
+	  				position = 0,
+	  				dataURI = canvas.toDataURL( "image/png" ),
+	  				pdf = new jsPDF();
+
+	  			pdf.addImage( dataURI, "PNG", 0, position, imgWidth, imgHeight );
+
+	  			heightLeft -= pageHeight;
+
+	  			while ( heightLeft >= 0 )
+	  			{
+	  				position = heightLeft - imgHeight;
+	  				pdf.addPage();
+	  				pdf.addImage( dataURI, "PNG", 0, position, imgWidth, imgHeight );
+	  				heightLeft -= pageHeight;
+	  			}
+
+	  			pdf.save( "cdmc_summary_" + $scope.cdmcAnalysis + ".pdf" );
+	  		}
+	  	});
+
+		$("#summary").find('.screenShotTempCanvas').remove();
+		$("#summary").find('.tempHide').show().removeClass('tempHide');
+	  };
 
 	}]).directive('ngDrop', function($parse){
 	  return{
@@ -839,5 +877,37 @@ moment.locale( myUtil.getBrowserLang() );
 		});
 	};
 
+	convSVG = function ()
+	{
+	  	var svgElements = $("#summary").find('svg');
+	  	
+	  	//replace all svgs with a temp canvas
+	  	svgElements.each(function() {
+	    	var 
+	    		canvas, 
+	    		xml;
+
+	    	// canvg doesn't cope very well with em font sizes so find the calculated size in pixels and replace it in the element.
+	    	$.each($(this).find('[style*=em]'), function(index, el) {
+	      		$(this).css('font-size', getStyle(el, 'font-size'));
+	    	});
+
+	    	canvas = document.createElement("canvas");
+	    	canvas.className = "screenShotTempCanvas";
+	    	
+	    	//convert SVG into a XML string
+	    	xml = (new XMLSerializer()).serializeToString(this);
+
+	    	// Removing the name space as IE throws an error
+	    	xml = xml.replace(/xmlns=\"http:\/\/www\.w3\.org\/2000\/svg\"/, '');
+
+	    	//draw the SVG onto a canvas
+	    	canvg(canvas, xml);
+	    	$(canvas).insertAfter(this);
+	    	//hide the SVG element
+	    	$(this).attr('class', 'tempHide');
+	    	$(this).hide();
+	  	});
+	};
 
 })();
