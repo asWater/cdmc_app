@@ -565,7 +565,7 @@ moment.locale( myUtil.getBrowserLang() );
 			case "ALLTAB":
 				return jsonObj.filter( function( elem )
 				{
-					return elem.OBJ_TYPE === "TABL";
+					return elem.OBJ_TYPE === "TABL" && elem.ADDITIONAL_INFO === "Transparent table";
 				});
 
 				break;
@@ -573,7 +573,7 @@ moment.locale( myUtil.getBrowserLang() );
 			case "ZEROTAB":
 				return jsonObj.filter( function( elem )
 				{
-					return elem.OBJ_TYPE === "TABL" && elem.TABLE_COUNT <= 0;
+					return elem.OBJ_TYPE === "TABL" && elem.ADDITIONAL_INFO === "Transparent table" && elem.TABLE_COUNT <= 0;
 				});
 
 				break;
