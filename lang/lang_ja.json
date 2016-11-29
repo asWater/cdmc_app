@@ -29,7 +29,7 @@
 		"p_otherAna": "その他の分析",
 		"tabCol_calc": "計算対象",
 		"tabRow_inactive": "有効化されていないオブジェクト",
-		"tabRow_totalCus": "カスタマオブジェクト総数（メインオブジェクト）: {{objMain}}",
+		"tabRow_totalCus": "カスタマオブジェクト総数（展開したもの）: {{objNum}}",
 		"tabRow_notRef": "参照されていないオブジェクト",
 		"tabRow_dupDom": "重複ドメイン",
 		"tabRow_totalDom": "ドメイン総数: {{totalDom}}",

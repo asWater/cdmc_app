@@ -11,8 +11,10 @@ moment.locale( myUtil.getBrowserLang() );
 	    createUCIAsummary,
 	    jsonCont,
 	    checkContents,
+	    jsonCustObj,
 	    jsonCustObjMain,
 	    jsonModObj,
+	    getCustObj,
 	    getCustObjMain,
 	    getModObj,
 	    objTypePivot,
@@ -391,8 +393,10 @@ moment.locale( myUtil.getBrowserLang() );
 		var
 			tmpJson;
 
+ 		jsonCustObj = getCustObj();
  		jsonCustObjMain = getCustObjMain();
  		jsonModObj = getModObj();
+ 		scope.custObjExpand = jsonCustObj.length;
  		scope.objMain = jsonCustObjMain.length;
  		scope.objMod = jsonModObj.length;
 
@@ -477,6 +481,13 @@ moment.locale( myUtil.getBrowserLang() );
 
 	};
 
+	getCustObj = function ()
+	{
+		return jsonCont.filter( function( elem )
+		{
+			return elem.OBJ_NAMESPACE === "C"
+		});
+	};
 
 	getCustObjMain = function ()
 	{
@@ -855,9 +866,9 @@ moment.locale( myUtil.getBrowserLang() );
 
 	setOtherAnalyses = function ( scope )
 	{
-		scope.inactiveObjCnt = getCustObjMainFilter( jsonCustObjMain, "INACTIVE" ).length;
-		scope.notRefObjCnt = getCustObjMainFilter( jsonCustObjMain, "NOREF" ).length;
-		scope.notRefObjCnt2 = getCustObjMainFilter( jsonCustObjMain, "NOREF2" ).length;
+		scope.inactiveObjCnt = getCustObjMainFilter( jsonCustObj, "INACTIVE" ).length;
+		scope.notRefObjCnt = getCustObjMainFilter( jsonCustObj, "NOREF" ).length;
+		scope.notRefObjCnt2 = getCustObjMainFilter( jsonCustObj, "NOREF2" ).length;
 		scope.domCnt = getCustObjMainFilter( jsonCustObjMain, "ALLDOM" ).length;
 		scope.dupDomCnt = getCustObjMainFilter( jsonCustObjMain, "DUPDOM" ).length;
 		scope.tabCnt = getCustObjMainFilter( jsonCustObjMain, "ALLTAB" ).length;

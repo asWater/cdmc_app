@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>CDMC Summary (v 1.2.1) </title>
+    <title>CDMC Summary (v 1.2.2) </title>
     <!-- Test after PC replacement -->
 
     <!-- Angular -->
@@ -174,14 +174,14 @@
 			  			<tr>
 			  				<td class="tabRowHeader" translate="summaryCA.tabRow_inactive"></td>
 			  				<td class="cellCenter"> {{inactiveObjCnt}} </td>
-			  				<td class="cellCenter" translate="summaryCA.tabRow_totalCus" translate-values="{ objMain: objMain }"></td>
-			  				<td class="cellCenter"> {{inactiveObjCnt / objMain * 100 | number:2}} %</td>
+			  				<td class="cellCenter" translate="summaryCA.tabRow_totalCus" translate-values="{ objNum: custObjExpand }"></td>
+			  				<td class="cellCenter"> {{inactiveObjCnt / custObjExpand * 100 | number:2}} %</td>
 			  			</tr>
 			  			<tr>
 			  				<td class="tabRowHeader" translate="summaryCA.tabRow_notRef"></td>
 			  				<td class="cellCenter"> {{notRefObjCnt}} <br> (w/o PROG, TRAN) {{notRefObjCnt2}} </td>
-			  				<td class="cellCenter" translate="summaryCA.tabRow_totalCus" translate-values="{ objMain: objMain }"></td>
-			  				<td class="cellCenter"> {{notRefObjCnt / objMain * 100 | number:2}} % <br> (w/o PROG, TRAN) {{notRefObjCnt2 / objMain * 100 | number:2}} % </td>
+			  				<td class="cellCenter" translate="summaryCA.tabRow_totalCus" translate-values="{ objNum: custObjExpand }"></td>
+			  				<td class="cellCenter"> {{notRefObjCnt / custObjExpand * 100 | number:2}} % <br> (w/o PROG, TRAN) {{notRefObjCnt2 / custObjExpand * 100 | number:2}} % </td>
 			  			</tr>
 			  			<tr>
 			  				<td class="tabRowHeader" translate="summaryCA.tabRow_dupDom"></td>

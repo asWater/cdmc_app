@@ -29,7 +29,7 @@
 		"p_otherAna": "Other Analyses",
 		"tabCol_calc": "Calc Parameter",
 		"tabRow_inactive": "Inactive Objects",
-		"tabRow_totalCus": "Total Customer Main Objects: {{objMain}}",
+		"tabRow_totalCus": "Total Customer (Expanded Objects): {{objNum}}",
 		"tabRow_notRef": "Not Referred Objects",
 		"tabRow_dupDom": "Duplicate Domains",
 		"tabRow_totalDom": "Total Domains: {{totalDom}}",
